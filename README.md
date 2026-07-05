@@ -4,11 +4,9 @@
 
 ### Live position radar for Valve's *Deadlock*
 
-**Browser tab title:** LZ God Eyes · **Product name:** WebRadarDL
-
 [![Windows](https://img.shields.io/badge/platform-Windows%2010%2F11-blue)](https://www.microsoft.com/windows)
 [![Node](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org/)
-[![License](https://img.shields.io/badge/docs-full%20technical-purple)](./docs/README.md)
+[![Game](https://img.shields.io/badge/game-%20Deadlock-purple)](./docs/README.md)
 
 *External memory reader → WebSocket hub → React minimap with hero portraits, HP, and shareable links.*
 
