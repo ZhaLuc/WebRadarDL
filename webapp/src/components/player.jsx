@@ -2,8 +2,9 @@ import { useRef } from "react";
 import HeroPortrait from "./heroportrait";
 import {
   getRadarPosition,
-  getHeroImage,
+  getHeroImageForPlayer,
   getPlayerName,
+  resolveHeroSlug,
   teamColors,
 } from "../utilities/utilities";
 
@@ -47,7 +48,7 @@ const Player = ({
   const teamColor = isTeammate
     ? teamColors[playerData.m_team] || "#4a9fd8"
     : "#e74c3c";
-  const heroImage = getHeroImage(playerData.m_hero_slug, heroMap);
+  const heroImage = getHeroImageForPlayer(playerData, heroMap);
   const heroName = getPlayerName(playerData, heroMap);
   const isDead = playerData.m_is_dead;
   const borderColor = isCalibrating ? "#fbbf24" : isDead ? "#9ca3af" : teamColor;
@@ -107,7 +108,7 @@ const Player = ({
                 heroName={heroName}
                 variant="radar"
                 fallbackColor={teamColor}
-                fallbackSlug={playerData.m_hero_slug}
+                fallbackSlug={resolveHeroSlug(playerData)}
               />
             </div>
           </div>

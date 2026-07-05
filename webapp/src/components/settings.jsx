@@ -2,7 +2,8 @@ import { useState } from "react";
 import {
   calibrationToDataJson,
   DEFAULT_CALIBRATION,
-  getHeroName,
+  getPlayerName,
+  resolveHeroSlug,
   nudgeCalibration,
 } from "../utilities/utilities";
 
@@ -402,7 +403,7 @@ const SettingsButton = ({
                 </ol>
                 {localPlayer && (
                   <div className="text-[11px] text-amber-200/90 pt-1 border-t border-amber-400/20">
-                    Your hero: <strong>{getHeroName(localPlayer.m_hero_slug, heroMap)}</strong>
+                    Your hero: <strong>{getPlayerName(localPlayer, heroMap)}</strong>
                   </div>
                 )}
               </div>
@@ -682,8 +683,8 @@ const SettingsButton = ({
                     Local player
                   </div>
                   <div>
-                    you: {getHeroName(localPlayer.m_hero_slug, heroMap)} (
-                    {localPlayer.m_hero_slug})
+                    you: {getPlayerName(localPlayer, heroMap)} (
+                    {resolveHeroSlug(localPlayer)})
                   </div>
                   <div>
                     world: {localPlayer.m_position?.x?.toFixed(1)},{" "}

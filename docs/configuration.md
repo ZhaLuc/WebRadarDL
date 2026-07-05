@@ -31,7 +31,7 @@ flowchart TB
 
 ---
 
-## Memory reader — `config.json`
+## Memory reader - `config.json`
 
 **Path:** `usermode/release/config.json` (next to `radar_reader.exe`)
 
@@ -66,11 +66,11 @@ ws://{m_ip}:{m_port}/deadlock_webradar
 | Custom port | Set `m_port` to match `RADAR_WEB_PORT` |
 | Remote reader (advanced) | Point `m_ip` at host machine IP |
 
-Normally leave at defaults — reader and host run on the same PC.
+Normally leave at defaults - reader and host run on the same PC.
 
 ---
 
-## Node host — environment variables
+## Node host - environment variables
 
 Set before spawning `host.js` (or in system environment):
 
@@ -90,7 +90,7 @@ If you change the port, update `config.json` `m_port` to match.
 
 ---
 
-## Browser — radar settings
+## Browser - radar settings
 
 **Storage key:** `deadlockRadarSettings`  
 **Written by:** host browser only
@@ -109,7 +109,7 @@ Synced to viewers via `session_share` messages.
 
 ---
 
-## Browser — map calibration
+## Browser - map calibration
 
 **Storage key:** `deadlockMapCalibration`  
 **Defaults file:** `webapp/public/data/deadlock/data.json`

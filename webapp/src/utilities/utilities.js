@@ -1,3 +1,5 @@
+import heroIdMapData from "../data/hero-id-map.json";
+
 export const teamEnum = {
   none: 0,
   spectator: 1,
@@ -8,6 +10,20 @@ export const teamEnum = {
 export const teamColors = {
   [teamEnum.amber]: "#e8a838",
   [teamEnum.sapphire]: "#4a9fd8",
+};
+
+// Fallback when native reader sends slug "unknown" (keep in sync with hero-id-map.json).
+const HERO_ID_SLUG = Object.fromEntries(
+  Object.entries(heroIdMapData).map(([id, slug]) => [Number(id), slug])
+);
+
+export const resolveHeroSlug = (player) => {
+  const slug = player?.m_hero_slug;
+  if (slug && slug !== "unknown") {
+    return slug;
+  }
+
+  return HERO_ID_SLUG[player?.m_hero_id] ?? slug;
 };
 
 // StatLocker art has amber (2) at the bottom. Sapphire (3) needs a 180° flip
@@ -125,6 +141,9 @@ export const getHeroImage = (heroSlug, heroMap) => {
   return entry?.file ? `./heroes/${entry.file}` : null;
 };
 
+export const getHeroImageForPlayer = (player, heroMap) =>
+  getHeroImage(resolveHeroSlug(player), heroMap);
+
 export const getHeroName = (heroSlug, heroMap) => {
   const entry = getHeroEntry(heroSlug, heroMap);
   if (entry?.name) {
@@ -142,12 +161,12 @@ export const getHeroName = (heroSlug, heroMap) => {
 };
 
 export const getPlayerName = (player, heroMap) => {
-  const heroName = getHeroName(player?.m_hero_slug, heroMap);
+  const heroName = getHeroName(resolveHeroSlug(player), heroMap);
   if (heroName && heroName !== "Unknown") {
     return heroName;
   }
 
-  if (player?.m_name && player.m_name.trim() !== "") {
+  if (player?.m_name && player.m_name.trim() !== "" && player.m_name !== "Unknown Hero") {
     return player.m_name.trim();
   }
 

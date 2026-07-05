@@ -93,7 +93,7 @@ y = (y - 0.5) * scaleY + 0.5 + offsetY
 
 ## Team-based map rotation
 
-Separate from calibration — applied in `Radar.jsx`:
+Separate from calibration - applied in `Radar.jsx`:
 
 | Local team | Map rotation |
 |------------|--------------|
@@ -138,7 +138,7 @@ Enables overlay with pulsing **YOU** marker at local player position. Stand on a
 
 ### Export
 
-**Copy calibration JSON** produces a snippet suitable for `data.json` — share calibrated values across machines by committing to repo or distributing file.
+**Copy calibration JSON** produces a snippet suitable for `data.json` - share calibrated values across machines by committing to repo or distributing file.
 
 ---
 
@@ -170,7 +170,7 @@ Enables overlay with pulsing **YOU** marker at local player position. Stand on a
 2. Stand on a visible lane marker or shrine
 3. Open **Calibrate Map** → enable calibration mode
 4. Adjust offset nudge pad until **YOU** dot sits on the landmark
-5. Walk to opposite lane — verify scale; tweak `scaleX`/`scaleY` if needed
+5. Walk to opposite lane - verify scale; tweak `scaleX`/`scaleY` if needed
 6. Export JSON and optionally update `data.json` for distribution
 
 ---

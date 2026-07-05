@@ -1,9 +1,9 @@
 import MaskedIcon from "./maskedicon";
 import HeroPortrait from "./heroportrait";
-import { getHeroImage, getPlayerName, teamColors } from "../utilities/utilities";
+import { getHeroImageForPlayer, getPlayerName, resolveHeroSlug, teamColors } from "../utilities/utilities";
 
 const PlayerCard = ({ playerData, isOnRightSide, heroMap }) => {
-  const heroImage = getHeroImage(playerData.m_hero_slug, heroMap);
+  const heroImage = getHeroImageForPlayer(playerData, heroMap);
   const heroName = getPlayerName(playerData, heroMap);
   const healthPercent = playerData.m_health_max
     ? Math.round((playerData.m_health / playerData.m_health_max) * 100)
@@ -24,7 +24,7 @@ const PlayerCard = ({ playerData, isOnRightSide, heroMap }) => {
           heroName={heroName}
           variant="card"
           fallbackColor={teamColors[playerData.m_team] || "#4a9fd8"}
-          fallbackSlug={playerData.m_hero_slug}
+          fallbackSlug={resolveHeroSlug(playerData)}
           className="h-[3rem] w-[2.25rem] rounded-sm"
           style={isDead ? { filter: "grayscale(0.85)" } : undefined}
         />

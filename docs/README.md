@@ -1,4 +1,4 @@
-# WebRadarDL — Technical Documentation Index
+# WebRadarDL - Technical Documentation Index
 
 Hyper-detailed developer documentation for every layer of WebRadarDL. Start with the [main README](../README.md) for the product overview; use this index to dive into a specific subsystem.
 

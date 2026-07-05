@@ -89,7 +89,7 @@ cd webapp
 npm run dev
 ```
 
-Runs Vite dev server — still needs `host.js` or manual WebSocket for full stack.
+Runs Vite dev server - still needs `host.js` or manual WebSocket for full stack.
 
 ---
 

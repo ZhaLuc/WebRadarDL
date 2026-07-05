@@ -73,7 +73,7 @@ After most Deadlock updates, **`dead_offsets.hpp` must be refreshed** from a cur
 | `m_vMinimapMins` | `0x84` | Relative to game rules |
 | `m_vMinimapMaxs` | `0x90` | Relative to game rules |
 
-*RVA values are version-specific — update after patches.*
+*RVA values are version-specific - update after patches.*
 
 ---
 
@@ -135,7 +135,7 @@ If a new hero ships:
 
 ## Game update checklist
 
-1. Launch updated Deadlock — note build ID / date
+1. Launch updated Deadlock - note build ID / date
 2. Run offset dumper against `client.dll`
 3. Update `dead_offsets.hpp` RVAs and struct offsets
 4. Verify patterns in `common.hpp` still match

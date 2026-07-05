@@ -57,7 +57,7 @@ The supervisor **does not** read game memory. Only `radar_reader.exe` touches `d
 |------|----------|--------------|----------|---------|
 | **5173** | HTTP | `0.0.0.0` | `host.js` | Web UI, REST APIs, primary WebSocket `/deadlock_webradar` |
 | **22006** | HTTP/WS | `127.0.0.1` | `host.js` (legacy relay) | Secondary WebSocket path for backward compatibility |
-| **443** (outbound) | HTTPS | — | cloudflared | Ephemeral public tunnel to Cloudflare edge |
+| **443** (outbound) | HTTPS | - | cloudflared | Ephemeral public tunnel to Cloudflare edge |
 
 WebSocket path (both servers): **`/deadlock_webradar`**
 
@@ -99,9 +99,9 @@ sequenceDiagram
 
 Shutdown can be triggered three ways:
 
-1. **Settings → Share → End Program** — UI `POST /api/shutdown` writes `.radar-shutdown`
-2. **Close supervisor console** — `CTRL_CLOSE_EVENT` handler
-3. **`STOP.bat`** — runs `stop.ps1`, kills processes by name/port
+1. **Settings → Share → End Program** - UI `POST /api/shutdown` writes `.radar-shutdown`
+2. **Close supervisor console** - `CTRL_CLOSE_EVENT` handler
+3. **`STOP.bat`** - runs `stop.ps1`, kills processes by name/port
 
 ```mermaid
 sequenceDiagram

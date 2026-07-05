@@ -64,7 +64,7 @@ host === "localhost" || host === "127.0.0.1" || host === "[::1]"
 | End Program | Yes | No |
 | See live radar | Yes | Yes (relay only) |
 
-Remote viewers connect via LAN IP or Cloudflare URL — same WebSocket path, no memory reader on their machine.
+Remote viewers connect via LAN IP or Cloudflare URL - same WebSocket path, no memory reader on their machine.
 
 ---
 
@@ -115,7 +115,7 @@ flowchart LR
 
 ### Team rotation
 
-StatLocker art places Amber (team 2) at the bottom. When `localTeam === sapphire (3)`, the map rotates **180°** so your base stays at the bottom — matching in-game minimap behavior.
+StatLocker art places Amber (team 2) at the bottom. When `localTeam === sapphire (3)`, the map rotates **180°** so your base stays at the bottom - matching in-game minimap behavior.
 
 ### Dot sizing
 

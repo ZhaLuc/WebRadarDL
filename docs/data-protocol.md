@@ -1,6 +1,6 @@
 # Data protocol
 
-All real-time data flows as **JSON over WebSocket** on path `/deadlock_webradar`. There is no binary framing, compression, or protobuf — each message is a complete UTF-8 JSON document.
+All real-time data flows as **JSON over WebSocket** on path `/deadlock_webradar`. There is no binary framing, compression, or protobuf - each message is a complete UTF-8 JSON document.
 
 ---
 
@@ -190,7 +190,7 @@ gantt
   full scan     :200, 50
 ```
 
-- **Full scan** (`f::run`): every 4th tick — entity iteration 0..2047
+- **Full scan** (`f::run`): every 4th tick - entity iteration 0..2047
 - **Fast scan** (`f::run_fast`): cached controller list refresh
 
 ---

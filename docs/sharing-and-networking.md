@@ -80,7 +80,7 @@ stateDiagram-v2
 
 ### Binary location
 
-`tools/cloudflared.exe` — auto-downloaded from GitHub releases if missing.
+`tools/cloudflared.exe` - auto-downloaded from GitHub releases if missing.
 
 ### Log files
 
@@ -117,7 +117,7 @@ Remote viewers:
 2. Connect WebSocket to same host (`wss://` when using Cloudflare)
 3. Receive `lastGamePayload` snapshot on connect
 4. Receive `session_share` for calibration sync
-5. See interpolated radar — **no game or reader required**
+5. See interpolated radar - **no game or reader required**
 
 Viewer count excludes:
 
@@ -143,10 +143,10 @@ Override with environment variables:
 
 | Topic | Behavior |
 |-------|----------|
-| Authentication | None — anyone with the URL can view |
+| Authentication | None - anyone with the URL can view |
 | Shutdown API | `POST /api/shutdown` restricted to localhost |
 | Tunnel URL | Ephemeral; changes each session |
-| Game memory | Never exposed over network — only derived positions |
+| Game memory | Never exposed over network - only derived positions |
 
 Treat public share links as **temporary read-only access** to your radar feed.
 

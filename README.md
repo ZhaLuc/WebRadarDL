@@ -82,17 +82,17 @@ flowchart TB
 - **Real-time player dots** on a circular Deadlock minimap
 - **Hero portraits** and **display names** on side player cards
 - **HP bars** with current / max health
-- **Team colors** — Amber (`#e8a838`) and Sapphire (`#4a9fd8`)
+- **Team colors** - Amber (`#e8a838`) and Sapphire (`#4a9fd8`)
 - **Local player highlight** and team-aware map rotation (Sapphire flips 180°)
-- **Position smoothing** — exponential interpolation between 20 Hz packets
+- **Position smoothing** - exponential interpolation between 20 Hz packets
 
 ### Operations
 
-- **Automatic first-run setup** — `npm install`, optional `npm run build`
+- **Automatic first-run setup** - `npm install`, optional `npm run build`
 - **Windows firewall rule** for LAN viewers (Private profile, TCP 5173)
 - **Public share links** via auto-downloaded `cloudflared`
-- **Session sync** — calibration and dot size pushed to remote viewers
-- **Debug panel** — entity system source, scan mode, controller counts
+- **Session sync** - calibration and dot size pushed to remote viewers
+- **Debug panel** - entity system source, scan mode, controller counts
 
 ### Developer-facing
 
@@ -109,10 +109,10 @@ flowchart TB
 
 ```
 WebRadarDL.exe          ← visible console supervisor (you start this)
-├── node host.js        ← hidden — HTTP, WebSocket hub, cloudflared
-├── radar_reader.exe    ← visible — admin memory reader (UAC)
-├── cloudflared.exe       ← hidden — optional public URL
-└── Edge/Chrome --app   ← visible — LZ God Eyes UI
+├── node host.js        ← hidden - HTTP, WebSocket hub, cloudflared
+├── radar_reader.exe    ← visible - admin memory reader (UAC)
+├── cloudflared.exe       ← hidden - optional public URL
+└── Edge/Chrome --app   ← visible - LZ God Eyes UI
 ```
 
 | Process | Binary | Privilege | Role |
@@ -129,7 +129,7 @@ WebRadarDL.exe          ← visible console supervisor (you start this)
 |------|------|----------|---------|
 | **5173** | `0.0.0.0` | HTTP + WS | Primary UI, `/deadlock_webradar` WebSocket |
 | **22006** | `127.0.0.1` | WS (legacy) | Backward-compatible relay |
-| **443** outbound | — | HTTPS | cloudflared to Cloudflare edge |
+| **443** outbound | - | HTTPS | cloudflared to Cloudflare edge |
 
 Deep dive: [Architecture](./docs/architecture.md) · [Data protocol](./docs/data-protocol.md)
 
@@ -140,7 +140,7 @@ Deep dive: [Architecture](./docs/architecture.md) · [Data protocol](./docs/data
 ### Requirements
 
 - **Windows 10/11** (x64)
-- **[Node.js 18+](https://nodejs.org/)** — used on first run for the web server
+- **[Node.js 18+](https://nodejs.org/)** - used on first run for the web server
 - **Deadlock** installed and runnable (`deadlock.exe`)
 - **Administrator approval** when UAC prompts for `radar_reader.exe`
 
@@ -161,7 +161,7 @@ The console runs six steps:
 | **2/6** | `npm run build` only if `webapp/dist/` is missing |
 | **3/6** | Start `host.js` (hidden), wait for port 5173 |
 | **4/6** | Log tunnel readiness (tunnel runs inside `host.js`) |
-| **5/6** | Launch `radar_reader.exe` — **approve UAC** |
+| **5/6** | Launch `radar_reader.exe` - **approve UAC** |
 
 ![UAC elevation prompt](./Media/04-uac-prompt.png)
 
@@ -252,7 +252,7 @@ Payload fields include `m_players`, `m_local_team`, `m_minimap_mins` / `m_minima
 | Tab | Purpose |
 |-----|---------|
 | **Share** | Copy localhost, LAN, and public URLs; End Program |
-| **Calibrate Map** | Offset, scale, zoom, flip — align dots to landmarks |
+| **Calibrate Map** | Offset, scale, zoom, flip - align dots to landmarks |
 | **Debug** | Reader diagnostics, entity system, scan mode |
 
 ![Calibration mode](./Media/08-settings-calibration.png)
@@ -280,12 +280,10 @@ flowchart LR
   CF --> NET[Internet viewers]
 ```
 
-- Viewers need **only a browser** — no game, no reader, no install
+- Viewers need **only a browser** - no game, no reader, no install
 - Host syncs **calibration** and **dot size** via WebSocket `session_share`
-- Public URLs are **ephemeral** — new each session
+- Public URLs are **ephemeral** - new each session
 - `tunnelStatus`: `idle` → `starting` → `ready` | `failed`
-
-![Remote viewer experience](./Media/13-share-remote-viewer.png)
 
 Details: [Sharing & networking](./docs/sharing-and-networking.md)
 
@@ -293,7 +291,7 @@ Details: [Sharing & networking](./docs/sharing-and-networking.md)
 
 ## Configuration
 
-### Memory reader — `usermode/release/config.json`
+### Memory reader - `usermode/release/config.json`
 
 ```json
 {
@@ -335,8 +333,6 @@ Full reference: [Configuration](./docs/configuration.md) · [Map calibration](./
 | Launcher | `WebRadarDL.exe` |
 | Reader | `usermode/release/radar_reader.exe` |
 
-![Visual Studio build optional](./Media/15-visual-studio-build.png)
-
 ### Web UI
 
 ```powershell
@@ -345,7 +341,7 @@ npm install
 npm run build
 ```
 
-Skip if you did not change UI — `webapp/dist/` is prebuilt in the repo.
+Skip if you did not change UI - `webapp/dist/` is prebuilt in the repo.
 
 After game patches, update offsets in `usermode/src/sdk/dead_offsets.hpp` and rebuild.
 
@@ -413,7 +409,7 @@ flowchart LR
 
 ## Media assets
 
-Documentation images live in [`Media/`](./Media/). **Placeholder paths are wired in this README** — add PNG files with the exact names listed in [`Media/IMAGES.md`](./Media/IMAGES.md).
+Documentation screenshots live in [`Media/`](./Media/). See [`Media/IMAGES.md`](./Media/IMAGES.md) for the full capture guide and filename list.
 
 | File | Description |
 |------|-------------|
@@ -432,9 +428,7 @@ Documentation images live in [`Media/`](./Media/). **Placeholder paths are wired
 | `13-share-remote-viewer.png` | Remote viewer |
 | `14-stop-bat.png` | STOP.bat |
 
-Optional: `15-visual-studio-build.png`, `16-deadlock-not-running.png`
-
-Until images are added, GitHub will show broken image icons — that is expected.
+Optional: `13-share-remote-viewer.png`, `15-visual-studio-build.png`, `16-deadlock-not-running.png`
 
 ---
 
@@ -449,15 +443,13 @@ Until images are added, GitHub will show broken image icons — that is expected
 | LAN viewer timeout | Firewall / wrong network | Same Wi-Fi; Private profile |
 | Misaligned dots | Calibration drift | Settings → Calibrate Map |
 
-![Waiting for match optional](./Media/16-deadlock-not-running.png)
-
 Full guide: [Troubleshooting](./docs/troubleshooting.md)
 
 ---
 
 <div align="center">
 
-**WebRadarDL** — external Deadlock radar with shareable browser UI
+**WebRadarDL** - external Deadlock radar with shareable browser UI
 
 [Technical docs](./docs/README.md) · [Media guide](./Media/IMAGES.md)
 

@@ -73,7 +73,7 @@ On `connection`:
 
 ### Client counting
 
-`viewerCount` excludes localhost and the reader connection — used for share metadata.
+`viewerCount` excludes localhost and the reader connection - used for share metadata.
 
 ---
 

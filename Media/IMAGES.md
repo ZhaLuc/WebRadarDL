@@ -1,8 +1,8 @@
-# WebRadarDL — Screenshot & Media Guide
+# WebRadarDL - Screenshot & Media Guide
 
-Place every file listed below directly in this `Media/` folder using the **exact filename** shown. Use **PNG** format, **1920×1080** or higher where possible, and the **Windows Snipping Tool** or **Win+Shift+S** (save as PNG).
+Place every file listed below directly in this `Media/` folder using the **exact filename** shown. Use **PNG** format, **1920x1080** or higher where possible, and the **Windows Snipping Tool** or **Win+Shift+S** (save as PNG).
 
-After you add the images, tell the maintainer to refresh the README links (they already point at these paths).
+The main README embeds these files for GitHub rendering.
 
 ---
 
@@ -10,7 +10,7 @@ After you add the images, tell the maintainer to refresh the README links (they 
 
 | Filename | What to capture | How to get it |
 |----------|-----------------|---------------|
-| `01-hero-banner.png` | Full radar during a live Deadlock match — map, player dots, side cards visible | Run WebRadarDL, join a match, maximize the browser window, capture the entire radar view |
+| `01-hero-banner.png` | Full radar during a live Deadlock match - map, player dots, side cards visible | Run WebRadarDL, join a match, maximize the browser window, capture the entire radar view |
 | `02-launcher-init.png` | WebRadarDL console during startup (steps 1–4 visible) | Start `WebRadarDL.exe`, screenshot the console while npm/host steps are running |
 | `03-launcher-ready.png` | Console showing **Ready: http://localhost:5173** | Screenshot after all 6 init steps complete |
 | `04-uac-prompt.png` | Windows UAC dialog for `radar_reader.exe` | Screenshot when the elevation prompt appears (crop to the dialog) |
@@ -41,4 +41,4 @@ After you add the images, tell the maintainer to refresh the README links (they 
 - All lowercase filenames exactly as listed (e.g. `01-hero-banner.png`).
 - PNG only (`.png` extension).
 - No spaces in filenames.
-- Do not rename after adding — documentation links depend on these names.
+- Do not rename after adding - documentation links depend on these names.

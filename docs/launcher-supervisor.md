@@ -30,7 +30,7 @@ flowchart TD
 | **1/6** | `ensure_npm_dependencies()` | Exits if `npm install` fails |
 | **2/6** | `ensure_web_build()` | Skips if `webapp/dist/index.html` exists; else `npm run build` |
 | **3/6** | `start_host_server()` | Hidden `node host.js`; waits up to 60s for port 5173 |
-| **4/6** | `start_public_tunnel()` | **Log only** — tunnel is managed inside `host.js` |
+| **4/6** | `start_public_tunnel()` | **Log only** - tunnel is managed inside `host.js` |
 | **5/6** | `start_memory_reader()` | `ShellExecuteExW` with `runas`; does not fail if UAC delayed |
 | **6/6** | `open_browser()` | Tries Edge/Chrome `--app=`, falls back to default handler |
 

@@ -67,7 +67,7 @@ flowchart TD
 | Symptom | Connected but empty `m_players` |
 |---------|-----------------------------------|
 | Cause | Offsets outdated after game patch |
-| Fix | Update `dead_offsets.hpp`, rebuild — see [SDK & offsets](./sdk-and-offsets.md) |
+| Fix | Update `dead_offsets.hpp`, rebuild - see [SDK & offsets](./sdk-and-offsets.md) |
 
 ### `entity_system_ok: false`
 
@@ -92,7 +92,7 @@ flowchart TD
 | Symptom | Dots jump every 50ms |
 |---------|----------------------|
 | Expected | Reader is 20 Hz |
-| Fix | Interpolation should smooth — verify `useInterpolatedPlayers` enabled; if still bad, check CPU load |
+| Fix | Interpolation should smooth - verify `useInterpolatedPlayers` enabled; if still bad, check CPU load |
 
 ### Remote viewer sees stale data
 

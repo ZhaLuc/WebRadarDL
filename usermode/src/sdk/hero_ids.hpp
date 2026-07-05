@@ -4,17 +4,49 @@
 #include <string>
 #include <cstdint>
 
+// Playable hero IDs (38 total). Keep in sync with webapp/src/data/hero-id-map.json
+// and webapp/public/heroes/hero_map.json (slug -> display name / portrait).
 inline const char* hero_slug_from_id(uint32_t hero_id)
 {
 	static const std::unordered_map<uint32_t, const char*> hero_map = {
-		{1, "inferno"}, {2, "gigawatt"}, {3, "hornet"}, {4, "spectre"}, {6, "bull"},
-		{7, "wraith"}, {8, "engineer"}, {10, "chrono"}, {11, "sumo"}, {12, "kelvin"},
-		{13, "haze"}, {14, "astro"}, {15, "bebop"}, {16, "nano"}, {17, "archer"},
-		{18, "digger"}, {19, "shiv"}, {20, "tengu"}, {21, "kali"}, {25, "warden"},
-		{27, "yamato"}, {31, "lash"}, {35, "viscous"}, {50, "synth"}, {52, "mirage"},
-		{60, "magician"}, {63, "vampirebat"}, {64, "drifter"}, {65, "priest"},
-		{66, "frank"}, {67, "bookworm"}, {69, "doorman"}, {71, "punkgoat"},
-		{76, "necro"}, {77, "fencer"}, {79, "familiar"}, {80, "werewolf"}, {81, "unicorn"},
+		{1, "inferno"},      // Infernus
+		{2, "gigawatt"},     // Seven
+		{3, "hornet"},       // Vindicta
+		{4, "spectre"},      // Lady Geist
+		{6, "bull"},         // Abrams
+		{7, "wraith"},       // Wraith
+		{8, "engineer"},     // McGinnis
+		{10, "chrono"},      // Paradox
+		{11, "sumo"},        // Dynamo
+		{12, "kelvin"},      // Kelvin
+		{13, "haze"},        // Haze
+		{14, "astro"},       // Holliday
+		{15, "bebop"},       // Bebop
+		{16, "nano"},        // Calico
+		{17, "archer"},      // Grey Talon
+		{18, "digger"},      // Mo & Krill
+		{19, "shiv"},        // Shiv
+		{20, "tengu"},       // Ivy
+		{25, "warden"},      // Warden
+		{27, "yamato"},      // Yamato
+		{31, "lash"},        // Lash
+		{35, "viscous"},     // Viscous
+		{50, "synth"},       // Pocket
+		{52, "mirage"},      // Mirage
+		{58, "kali"},        // Vyper (internal codename kali)
+		{60, "magician"},    // Sinclair
+		{63, "vampirebat"},  // Mina
+		{64, "drifter"},     // Drifter
+		{65, "priest"},      // Venator
+		{66, "frank"},       // Victor
+		{67, "bookworm"},    // Paige
+		{69, "doorman"},     // The Doorman
+		{72, "punkgoat"},    // Billy
+		{76, "necro"},       // Graves
+		{77, "fencer"},      // Apollo
+		{79, "familiar"},    // Rem
+		{80, "werewolf"},    // Silver
+		{81, "unicorn"},     // Celeste
 	};
 
 	const auto it = hero_map.find(hero_id);

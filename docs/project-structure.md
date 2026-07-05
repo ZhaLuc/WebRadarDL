@@ -25,7 +25,7 @@ flowchart TD
 
 | Path | Type | Description |
 |------|------|-------------|
-| `WebRadarDL.exe` | Prebuilt binary | Release build of `launcher/` — primary entry point for users |
+| `WebRadarDL.exe` | Prebuilt binary | Release build of `launcher/` - primary entry point for users |
 | `START.bat` | Script | `cd` to repo root and run `WebRadarDL.exe` |
 | `STOP.bat` | Script | Invokes `stop.ps1` to kill all radar processes |
 | `stop.ps1` | PowerShell | Process/port cleanup without touching `deadlock.exe` |
@@ -34,7 +34,7 @@ flowchart TD
 
 ---
 
-## `launcher/` — C++ supervisor
+## `launcher/` - C++ supervisor
 
 | Path | Description |
 |------|-------------|
@@ -46,7 +46,7 @@ flowchart TD
 
 ---
 
-## `usermode/` — C++ memory reader
+## `usermode/` - C++ memory reader
 
 | Path | Description |
 |------|-------------|
@@ -68,7 +68,7 @@ flowchart TD
 | `core/sdk.cpp` | Local controller pointer update |
 | `features/features.cpp` | Player scan (full + fast), bounds, JSON assembly |
 | `features/players/players.cpp` | Per-player JSON fields (HP, position, hero) |
-| `sdk/dead_offsets.hpp` | **Hardcoded offsets** — update after game patches |
+| `sdk/dead_offsets.hpp` | **Hardcoded offsets** - update after game patches |
 | `sdk/entity.hpp` | Entity/controller/pawn wrappers |
 | `sdk/player_stats.hpp` | `PlayerDataGlobal` health/hero validation |
 | `sdk/hero_ids.hpp` | Hero ID → slug map |
@@ -77,7 +77,7 @@ flowchart TD
 
 ---
 
-## `webapp/` — Node host + React UI
+## `webapp/` - Node host + React UI
 
 | Path | Description |
 |------|-------------|

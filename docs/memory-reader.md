@@ -35,7 +35,7 @@ Loaded from `config.json` next to the executable (`usermode/release/`):
 }
 ```
 
-Implementation: `utils/config.cpp` — falls back to defaults if keys missing.
+Implementation: `utils/config.cpp` - falls back to defaults if keys missing.
 
 WebSocket URL format:
 
@@ -47,9 +47,9 @@ ws://{m_ip}:{m_port}/deadlock_webradar
 
 ## Game initialization (`try_initialize_game`)
 
-1. `m_memory->setup()` — `OpenProcess` on `deadlock.exe`
-2. `i::setup()` — resolve entity system (pattern or RVA), game rules
-3. `schema::setup()` — optional runtime schema table (warning only if fails)
+1. `m_memory->setup()` - `OpenProcess` on `deadlock.exe`
+2. `i::setup()` - resolve entity system (pattern or RVA), game rules
+3. `schema::setup()` - optional runtime schema table (warning only if fails)
 
 Retries every **2 seconds** until success.
 
@@ -73,8 +73,8 @@ sleep(50ms);
 
 | Mode | Function | Cost | Purpose |
 |------|----------|------|---------|
-| **full** | `f::run()` → `get_player_info()` | High — iterates 2048 entity indices | Discover controllers, refresh cache |
-| **fast** | `f::run_fast()` → `get_player_info_fast()` | Low — ~12 players | Update positions/HP from cache |
+| **full** | `f::run()` → `get_player_info()` | High - iterates 2048 entity indices | Discover controllers, refresh cache |
+| **fast** | `f::run_fast()` → `get_player_info_fast()` | Low - ~12 players | Update positions/HP from cache |
 
 ---
 
