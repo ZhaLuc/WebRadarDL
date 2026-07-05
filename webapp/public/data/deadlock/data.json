@@ -1,0 +1,14 @@
+{
+  "flipX": false,
+  "flipY": true,
+  "scaleX": 1.25,
+  "scaleY": 1.194,
+  "offsetX": 0.24,
+  "offsetY": 0.14,
+  "mapZoom": 0.82,
+  "useFixedBounds": false,
+  "minX": -8192,
+  "minY": -8192,
+  "maxX": 8192,
+  "maxY": 8192
+}

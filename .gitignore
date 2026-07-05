@@ -1,0 +1,25 @@
+# Dependencies
+webapp/node_modules/
+
+# Downloaded at runtime by host.js
+tools/cloudflared.exe
+
+# Session / tunnel runtime files
+.radar-session.json
+.radar-public-url.txt
+.radar-shutdown
+.cloudflared.log
+*.log
+
+# IDE
+.vs/
+.idea/
+*.vcxproj.user
+
+# C++ build artifacts
+usermode/vcpkg_installed/
+usermode/release/intermediates/
+usermode/release/*.pdb
+usermode/release/usermode.exe
+WebRadarDL.pdb
+launcher/release/intermediates/

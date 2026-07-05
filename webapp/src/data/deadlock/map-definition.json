@@ -1,0 +1,94 @@
+{
+  "size": 900,
+  "source": "statlocker.gg/interactive-map",
+  "layers": [
+    {
+      "className": "dtm-map-image dtm-background-layer",
+      "file": "layers/minimap_bg.png"
+    },
+    {
+      "className": "dtm-map-image dtm-frame-layer",
+      "file": "layers/minimap_frame.png"
+    },
+    {
+      "className": "dtm-map-image dtm-tunnels-layer dtm-transparent",
+      "file": "layers/minimap_midtown_mid_tunnels.png"
+    },
+    {
+      "className": "dtm-map-image dtm-mid-layer",
+      "file": "layers/minimap_midtown_mid_layer.png"
+    }
+  ],
+  "lanePaths": [
+    {
+      "d": "M 439.2857142857143 375 L 450 348.2142857142857 L 466.07142857142856 326.7857142857143 L 500.8928571428571 321.42857142857144 L 511.60714285714283 300 L 511.60714285714283 267.8571428571429 L 484.82142857142856 247.76785714285714 L 450 233.0357142857143 L 450 192.8571428571429 L 450 150 L 450 96.42857142857144 L 450 57.58928571428572 L 450 49.553571428571445 L 450 33.48214285714289 L 450 -32.14285714285711",
+      "className": "dtm-lane-path amber-segment",
+      "stroke": "#29b1cc"
+    },
+    {
+      "d": "M 450 932.1428571428571 L 450 866.5178571428571 L 450 850.4464285714286 L 450 842.4107142857142 L 450 803.5714285714286 L 450 750 L 450 707.1428571428571 L 450 669.6428571428571 L 415.17857142857144 652.3577008928571 L 388.39285714285717 632.1428571428571 L 388.39285714285717 600 L 399.1071428571429 578.5714285714286 L 433.92857142857144 573.2142857142857 L 450 551.7857142857142 L 460.7142857142857 533.3809988839286",
+      "className": "dtm-lane-path sapphire-segment",
+      "stroke": "#29b1cc"
+    },
+    {
+      "d": "M 794.1964285714286 357.5892857142857 L 791.8108258928571 347.5446428571429 L 766.0714285714286 332.14285714285717 L 752.0089285714286 325.11160714285717 L 739.2857142857142 316.07142857142856 L 733.9285714285713 294.6428571428571 L 723.2142857142858 267.8571428571429 L 707.14283671875 246.42857142857144 L 677.6785714285714 233.0357142857143 L 648.2142857142857 222.32142857142858 L 616.0714285714286 222.32142857142858 L 589.7356305803571 203.58189174107144 L 546.8680245535714 192.8466796875 L 517.4037388392857 171.43903459821428 L 476.7857142857143 123.21428571428572 L 468.7500051060268 88.39285714285717 L 460.04464285714283 57.58928571428572 L 460.04464285714283 49.553571428571445 L 460.04464285714283 33.48214285714289 L 460.04464285714283 -32.14285714285711",
+      "className": "dtm-lane-path amber-segment",
+      "stroke": "#59b247"
+    },
+    {
+      "d": "M 460.04464285714283 932.1428571428571 L 460.04464285714283 866.5178571428571 L 460.04464285714283 850.4464285714286 L 460.04464285714283 842.4107142857142 L 468.7500051060268 811.6071428571429 L 477.23563058035717 776.7857142857142 L 517.3932756696429 728.5714285714286 L 546.8889508928571 707.1323939732142 L 579.0108816964286 707.1533203125 L 620.6647600446429 664.2961774553571 L 648.8839285714286 663.6160714285714 L 670.0927734375 663.6788504464286 L 683.7053571428571 656.25 L 695.5287388392857 642.8571428571429 L 698.1340680803571 616.0923549107142 L 706.1383928571429 609.0401785714286 L 723.6642020089286 598.2317243303571 L 723.6851283482142 580.4338727678571 L 737.2767857142858 569.53125 L 751.2137276785713 557.1219308035714 L 750.4603794642858 530.3466796875",
+      "className": "dtm-lane-path sapphire-segment",
+      "stroke": "#59b247"
+    },
+    {
+      "d": "M 105.80357142857144 542.4107142857142 L 108.63909040178572 552.4658203125 L 133.92857142857144 567.8571428571429 L 147.99107142857144 574.8883928571429 L 160.71428571428572 583.9285714285714 L 166.0714285714286 605.3571428571429 L 176.78571428571428 632.1428571428571 L 192.8571428571429 653.5714285714286 L 222.32142857142858 666.9642857142857 L 251.7857142857143 677.6785714285714 L 283.9285612165179 677.6785714285714 L 310.7142959263393 696.4285714285714 L 353.57142857142856 707.1428571428571 L 383.0357142857143 728.5714285714286 L 423.2142857142857 776.7857142857142 L 431.2499948939732 811.6071428571429 L 439.95535714285717 842.4107142857142 L 439.95535714285717 850.4464285714286 L 439.95535714285717 866.5178571428571 L 439.95535714285717 932.1428571428571",
+      "className": "dtm-lane-path amber-segment",
+      "stroke": "#F1CC30"
+    },
+    {
+      "d": "M 439.95535714285717 -32.14285714285711 L 439.95535714285717 33.48214285714289 L 439.95535714285717 49.553571428571445 L 439.95535714285717 57.58928571428572 L 431.2499948939732 88.39285714285717 L 423.2142857142857 123.21428571428572 L 383.0357142857143 171.42857142857144 L 353.57142857142856 192.8571428571429 L 321.42857142857144 192.8571428571429 L 279.78515625 235.71430613839286 L 251.11607142857144 236.38392857142858 L 230.35714285714286 236.32114955357144 L 216.29464285714286 243.75 L 204.92117745535717 257.1428571428571 L 202.3320742885045 283.92857142857144 L 193.86160714285717 290.95982142857144 L 176.78571428571428 301.78781237444196 L 176.78571428571428 319.5661272321429 L 163.39285714285717 330.46875 L 149.24665178571428 342.8571428571429 L 150 369.64285714285717",
+      "className": "dtm-lane-path sapphire-segment",
+      "stroke": "#F1CC30"
+    }
+  ],
+  "objectives": [
+    { "type": "laneGuardian", "team": "amber", "lane": "1", "left": 109.821, "top": 527.679, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "laneGuardian", "team": "amber", "lane": "6", "left": 744.643, "top": 533.036, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "laneGuardian", "team": "sapphire", "lane": "6", "left": 790.179, "top": 372.321, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "laneGuardian", "team": "sapphire", "lane": "1", "left": 155.357, "top": 366.964, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "laneGuardian", "team": "amber", "lane": "4", "left": 460.714, "top": 525, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "laneGuardian", "team": "sapphire", "lane": "4", "left": 439.286, "top": 375, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "laneWalker", "team": "sapphire", "lane": "1", "left": 222.321, "top": 239.732, "fill": "icons/boss_health_fill_t2_psd.png", "health": "icons/boss_health_t2_psd.png" },
+    { "type": "laneWalker", "team": "sapphire", "lane": "6", "left": 712.5, "top": 251.786, "fill": "icons/boss_health_fill_t2_psd.png", "health": "icons/boss_health_t2_psd.png" },
+    { "type": "laneWalker", "team": "amber", "lane": "6", "left": 677.679, "top": 660.268, "fill": "icons/boss_health_fill_t2_psd.png", "health": "icons/boss_health_t2_psd.png" },
+    { "type": "laneWalker", "team": "amber", "lane": "1", "left": 187.5, "top": 648.214, "fill": "icons/boss_health_fill_t2_psd.png", "health": "icons/boss_health_t2_psd.png" },
+    { "type": "laneWalker", "team": "amber", "lane": "4", "left": 380.357, "top": 583.929, "fill": "icons/boss_health_fill_t2_psd.png", "health": "icons/boss_health_t2_psd.png" },
+    { "type": "laneWalker", "team": "sapphire", "lane": "4", "left": 519.978, "top": 316.071, "fill": "icons/boss_health_fill_t2_psd.png", "health": "icons/boss_health_t2_psd.png" },
+    { "type": "baseGuardian", "team": "amber", "lane": "4", "left": 455.357, "top": 699.107, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "baseGuardian", "team": "amber", "lane": "4", "left": 444.643, "top": 699.107, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "baseGuardian", "team": "amber", "lane": "6", "left": 520.982, "top": 724.554, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "baseGuardian", "team": "amber", "lane": "6", "left": 516.964, "top": 716.518, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "baseGuardian", "team": "amber", "lane": "1", "left": 383.036, "top": 716.518, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "baseGuardian", "team": "amber", "lane": "1", "left": 379.018, "top": 724.554, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "baseGuardian", "team": "sapphire", "lane": "6", "left": 520.982, "top": 175.446, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "baseGuardian", "team": "sapphire", "lane": "6", "left": 516.964, "top": 183.482, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "baseGuardian", "team": "sapphire", "lane": "4", "left": 455.357, "top": 200.893, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "baseGuardian", "team": "sapphire", "lane": "4", "left": 444.643, "top": 200.893, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "baseGuardian", "team": "sapphire", "lane": "1", "left": 383.036, "top": 183.482, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "baseGuardian", "team": "sapphire", "lane": "1", "left": 379.018, "top": 175.446, "fill": "icons/boss_health_fill.png", "health": "icons/boss_health_psd.png" },
+    { "type": "finalBoss", "team": "sapphire", "lane": "3", "left": 450, "top": 139.286, "fill": "icons/boss_health_final_stage2_fill_psd.png", "health": "icons/boss_health_final_fill_psd.png" },
+    { "type": "finalBoss", "team": "amber", "lane": "3", "left": 450, "top": 760.714, "fill": "icons/boss_health_final_stage2_fill_psd.png", "health": "icons/boss_health_final_fill_psd.png" },
+    { "type": "baseShrine", "team": "amber", "lane": "6", "left": 511.607, "top": 760.714, "fill": "icons/boss_health_fill_final_psd_55feccc9.png", "health": "icons/boss_health_psd.png" },
+    { "type": "baseShrine", "team": "amber", "lane": "1", "left": 388.393, "top": 760.714, "fill": "icons/boss_health_fill_final_psd_55feccc9.png", "health": "icons/boss_health_psd.png" },
+    { "type": "baseShrine", "team": "sapphire", "lane": "1", "left": 388.393, "top": 139.286, "fill": "icons/boss_health_fill_final_psd_55feccc9.png", "health": "icons/boss_health_psd.png" },
+    { "type": "baseShrine", "team": "sapphire", "lane": "6", "left": 511.607, "top": 139.286, "fill": "icons/boss_health_fill_final_psd_55feccc9.png", "health": "icons/boss_health_psd.png" }
+  ],
+  "shops": [
+    { "team": "sapphire", "lane": "4", "left": 407.143, "top": 400.446, "icon": "icons/minimap_shop_psd.png" },
+    { "team": "amber", "lane": "4", "left": 492.857, "top": 499.554, "icon": "icons/minimap_shop_psd.png" },
+    { "team": "sapphire", "lane": "6", "left": 819.643, "top": 371.317, "icon": "icons/minimap_shop_psd.png" },
+    { "team": "sapphire", "lane": "1", "left": 180.804, "top": 379.018, "icon": "icons/minimap_shop_psd.png" },
+    { "team": "amber", "lane": "1", "left": 80.3571, "top": 528.683, "icon": "icons/minimap_shop_psd.png" },
+    { "team": "amber", "lane": "6", "left": 719.196, "top": 520.982, "icon": "icons/minimap_shop_psd.png" }
+  ]
+}

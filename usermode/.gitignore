@@ -1,0 +1,8 @@
+.vs
+.idea
+vcpkg_installed
+release/intermediates/
+release/*.pdb
+release/usermode.exe
+release/usermode_out.txt
+release/*_diag.log
