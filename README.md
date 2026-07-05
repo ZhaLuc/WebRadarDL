@@ -285,6 +285,8 @@ flowchart LR
 - Public URLs are **ephemeral** - new each session
 - `tunnelStatus`: `idle` → `starting` → `ready` | `failed`
 
+![Remote viewer experience](./Media/13-share-remote-viewer.png)
+
 Details: [Sharing & networking](./docs/sharing-and-networking.md)
 
 ---
@@ -428,7 +430,7 @@ Documentation screenshots live in [`Media/`](./Media/). See [`Media/IMAGES.md`](
 | `13-share-remote-viewer.png` | Remote viewer |
 | `14-stop-bat.png` | STOP.bat |
 
-Optional: `13-share-remote-viewer.png`, `15-visual-studio-build.png`, `16-deadlock-not-running.png`
+Optional: `15-visual-studio-build.png`, `16-deadlock-not-running.png`
 
 ---
 
