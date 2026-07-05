@@ -12,6 +12,8 @@
 
 ![WebRadarDL live match view](./Media/01-hero-banner.png)
 
+> **Disclaimer:** This project is for educational and research purposes. Using third-party software in online games may violate Terms of Service and result in bans. Use at your own risk.
+
 </div>
 
 ---
