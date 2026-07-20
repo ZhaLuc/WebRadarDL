@@ -287,7 +287,7 @@ const server = http.createServer((req, res) => {
         webPort,
         hasLiveData: Boolean(lastGamePayload),
         readerConnected: readerClient !== null,
-        viewerCount: countBrowserClients(),
+        viewerCount: countViewerClients(),
       })
     );
     return;
@@ -305,8 +305,10 @@ const server = http.createServer((req, res) => {
 const webSocketServers = [];
 
 let readerClient = null;
+let hostClient = null;
 let lastGamePayload = null;
 let sharedSession = null;
+let lastReaderControl = null;
 
 function allClients() {
   const clients = new Set();
@@ -316,19 +318,38 @@ function allClients() {
   return clients;
 }
 
-function countBrowserClients() {
+function countViewerClients() {
   let count = 0;
   allClients().forEach((client) => {
-    if (client.readyState !== 1 || client === readerClient) {
+    if (client.readyState !== 1) {
       return;
     }
 
+    if (client === readerClient || client._role === "reader") {
+      return;
+    }
+
+    if (client === hostClient || client._role === "host") {
+      return;
+    }
+
+    // Preferred path: explicit viewer hello (required for Cloudflare tunnels,
+    // which appear as 127.0.0.1 on the host machine).
+    if (client._role === "viewer") {
+      count += 1;
+      return;
+    }
+
+    // Fallback: unknown remote (LAN) sockets that have not hello'd yet.
     const address = client._clientAddress ?? "";
-    if (address === "127.0.0.1" || address === "::1") {
-      return;
-    }
+    const isLoopback =
+      address === "127.0.0.1" ||
+      address === "::1" ||
+      address === "::ffff:127.0.0.1";
 
-    count += 1;
+    if (!isLoopback) {
+      count += 1;
+    }
   });
   return count;
 }
@@ -367,6 +388,7 @@ function bindWebSocketServer(webSocketServer) {
   webSocketServer.on("connection", (webSocket, request) => {
     const clientAddress = request.socket.remoteAddress.replace("::ffff:", "");
     webSocket._clientAddress = clientAddress;
+    webSocket._role = "unknown";
     console.info(`${clientAddress} connected`);
 
     if (webSocket !== readerClient) {
@@ -378,13 +400,47 @@ function bindWebSocketServer(webSocketServer) {
 
       try {
         const parsed = JSON.parse(text);
-        if (parsed.m_message_type === "session_share") {
-          sharedSession = {
-            m_calibration: parsed.m_calibration ?? null,
-            m_settings: parsed.m_settings ?? null,
-          };
-          console.info(`${clientAddress} updated shared session`);
-          sendToBrowsers(text, webSocket);
+        if (parsed.m_message_type === "host_hello" || parsed.m_message_type === "session_share") {
+          webSocket._role = "host";
+          hostClient = webSocket;
+
+          if (parsed.m_message_type === "session_share") {
+            sharedSession = {
+              m_calibration: parsed.m_calibration ?? null,
+              m_settings: parsed.m_settings ?? null,
+            };
+            console.info(`${clientAddress} updated shared session`);
+            sendToBrowsers(text, webSocket);
+          } else {
+            console.info(`${clientAddress} registered as host`);
+          }
+          return;
+        }
+
+        if (parsed.m_message_type === "viewer_hello") {
+          webSocket._role = "viewer";
+          console.info(`${clientAddress} registered as viewer`);
+          return;
+        }
+
+        if (parsed.m_message_type === "reader_control") {
+          if (parsed.m_command === "set_performance") {
+            lastReaderControl = text;
+          }
+
+          if (readerClient && readerClient.readyState === 1) {
+            readerClient.send(text);
+            console.info(
+              `${clientAddress} reader_control -> memory reader (${parsed.m_command || "unknown"})`
+            );
+          } else {
+            console.warn(`${clientAddress} reader_control ignored - reader not connected`);
+          }
+
+          // Browsers listen for reload_map so they can reset local map state.
+          if (parsed.m_command === "reload_map") {
+            sendToBrowsers(text, webSocket);
+          }
           return;
         }
       } catch {
@@ -394,7 +450,12 @@ function bindWebSocketServer(webSocketServer) {
       if (text.includes('"m_source"')) {
         if (readerClient !== webSocket) {
           readerClient = webSocket;
+          webSocket._role = "reader";
           console.info(`${clientAddress} registered as memory reader`);
+          if (lastReaderControl && webSocket.readyState === 1) {
+            webSocket.send(lastReaderControl);
+            console.info("replayed performance settings to memory reader");
+          }
         }
         lastGamePayload = text;
       }
@@ -410,6 +471,10 @@ function bindWebSocketServer(webSocketServer) {
       if (readerClient === webSocket) {
         readerClient = null;
         console.info("memory reader disconnected");
+      }
+      if (hostClient === webSocket) {
+        hostClient = null;
+        console.info("host UI disconnected");
       }
       console.info(`${clientAddress} disconnected`);
     });

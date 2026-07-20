@@ -1,7 +1,27 @@
 #include "pch.hpp"
 
+#include <algorithm>
+#include <atomic>
+#include <format>
+#include <mutex>
+
 namespace
 {
+	struct reader_runtime_config_t
+	{
+		bool performance_mode = false;
+		int update_hz = 20;
+		int full_scan_every = 4;
+		bool low_priority = false;
+		bool skip_unchanged = false;
+	};
+
+	std::mutex g_config_mutex;
+	reader_runtime_config_t g_config{};
+	std::atomic<bool> g_force_full_scan{ false };
+	std::atomic<bool> g_reload_requested{ false };
+	std::string g_last_payload;
+
 	void diag(const char* msg)
 	{
 		printf("%s\n", msg);
@@ -19,6 +39,94 @@ namespace
 		if (ip.empty() || ip == "localhost")
 			return "127.0.0.1";
 		return ip;
+	}
+
+	void apply_process_priority(const bool low_priority)
+	{
+		const HANDLE process = GetCurrentProcess();
+		const DWORD desired = low_priority ? BELOW_NORMAL_PRIORITY_CLASS : NORMAL_PRIORITY_CLASS;
+		if (!SetPriorityClass(process, desired))
+			diag("failed to set process priority");
+		else
+			diag(low_priority ? "process priority: below normal" : "process priority: normal");
+	}
+
+	reader_runtime_config_t snapshot_config()
+	{
+		std::lock_guard lock(g_config_mutex);
+		return g_config;
+	}
+
+	void handle_control_message(const std::string& text)
+	{
+		nlohmann::json parsed;
+		try
+		{
+			parsed = nlohmann::json::parse(text);
+		}
+		catch (...)
+		{
+			return;
+		}
+
+		if (!parsed.contains("m_message_type") || parsed["m_message_type"] != "reader_control")
+			return;
+
+		const auto command = parsed.value("m_command", "");
+		if (command == "reload_map")
+		{
+			g_reload_requested.store(true);
+			g_force_full_scan.store(true);
+			diag("reload_map requested");
+			return;
+		}
+
+		if (command != "set_performance")
+			return;
+
+		reader_runtime_config_t next{};
+		next.performance_mode = parsed.value("m_performance_mode", false);
+		next.update_hz = parsed.value("m_update_hz", 10);
+		next.low_priority = parsed.value("m_low_priority", true);
+		next.skip_unchanged = parsed.value("m_skip_unchanged", true);
+
+		const auto full_scan_ms = parsed.value("m_full_scan_interval_ms", 2000);
+		const auto tick_ms = next.performance_mode
+			? std::max(50, 1000 / std::clamp(next.update_hz, 5, 20))
+			: 50;
+		next.full_scan_every = next.performance_mode
+			? std::max(1, full_scan_ms / tick_ms)
+			: 4;
+
+		if (!next.performance_mode)
+		{
+			next.update_hz = 20;
+			next.full_scan_every = 4;
+			next.low_priority = false;
+			next.skip_unchanged = false;
+		}
+		else
+		{
+			next.update_hz = std::clamp(next.update_hz, 5, 20);
+		}
+
+		bool priority_changed = false;
+		{
+			std::lock_guard lock(g_config_mutex);
+			priority_changed = g_config.low_priority != next.low_priority
+				|| g_config.performance_mode != next.performance_mode;
+			g_config = next;
+		}
+
+		if (priority_changed)
+			apply_process_priority(next.performance_mode && next.low_priority);
+
+		diag(std::format(
+			"performance mode {} (hz={}, full_scan_every={}, skip_unchanged={})",
+			next.performance_mode ? "ON" : "OFF",
+			next.update_hz,
+			next.full_scan_every,
+			next.skip_unchanged ? "yes" : "no").c_str());
 	}
 
 	bool connect_websocket(ix::WebSocket& web_socket, const std::string& url)
@@ -50,6 +158,10 @@ namespace
 				}
 				handshake_cv.notify_one();
 				LOG_ERROR("failed to connect to the web socket ('%s')", url.c_str());
+			}
+			else if (msg->type == ix::WebSocketMessageType::Message)
+			{
+				handle_control_message(msg->str);
 			}
 		});
 
@@ -130,6 +242,13 @@ bool main()
 
 	for (;;)
 	{
+		if (g_reload_requested.exchange(false))
+		{
+			f::clear_caches();
+			g_last_payload.clear();
+			diag("cleared player/position caches for map reload");
+		}
+
 		if (!game_ready)
 		{
 			const auto now = std::chrono::steady_clock::now();
@@ -155,19 +274,41 @@ bool main()
 		else if (!m_memory->is_target_running())
 		{
 			game_ready = false;
+			f::clear_caches();
+			g_last_payload.clear();
 			diag("deadlock.exe closed - waiting for game");
 			continue;
 		}
 
+		const auto config = snapshot_config();
+		const auto tick_ms = config.performance_mode
+			? std::max(50, 1000 / std::clamp(config.update_hz, 5, 20))
+			: 50;
+		const auto full_scan_every = std::max(1, config.full_scan_every);
+
 		sdk::update();
 
-		if ((tick_counter % 4) == 0)
+		const bool do_full = g_force_full_scan.exchange(false)
+			|| (tick_counter % static_cast<uint32_t>(full_scan_every)) == 0;
+		if (do_full)
 			f::run();
 		else
 			f::run_fast();
 
-		web_socket.send(f::m_data.dump());
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		f::m_debug["performance_mode"] = config.performance_mode;
+		f::m_debug["update_hz"] = config.performance_mode ? config.update_hz : 20;
+		f::m_debug["full_scan_every"] = full_scan_every;
+		f::m_debug["tick_ms"] = tick_ms;
+		f::m_data["m_debug"] = f::m_debug;
+
+		const auto payload = f::m_data.dump();
+		if (!(config.performance_mode && config.skip_unchanged && payload == g_last_payload))
+		{
+			web_socket.send(payload);
+			g_last_payload = payload;
+		}
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(tick_ms));
 		++tick_counter;
 	}
 

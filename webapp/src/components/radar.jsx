@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import Player from "./player";
 import StatLockerMap from "./statlockermap";
-import { getPlayerName, getRadarPosition, isMapRotatedForTeam } from "../utilities/utilities";
+import { getPlayerName, getRadarPosition, isMapRotatedForTeam, FIXED_MAP_ZOOM } from "../utilities/utilities";
 
 const CalibrationOverlay = ({ localPlayerName, mapRotated }) => {
   const uprightStyle = mapRotated ? { transform: "rotate(180deg)" } : undefined;
@@ -65,6 +65,10 @@ const CalibrationOverlay = ({ localPlayerName, mapRotated }) => {
   );
 };
 
+// Fixed display zoom (matches the old default). Not user-adjustable - changing it
+// breaks calibration relative to the map art.
+const MAP_ZOOM = FIXED_MAP_ZOOM;
+
 const Radar = ({
   playerArray,
   bounds,
@@ -76,7 +80,6 @@ const Radar = ({
 }) => {
   const mapContainerRef = useRef();
   const lastPositionsRef = useRef(new Map());
-  const mapZoom = mapData?.mapZoom ?? 0.82;
   const localPlayer = playerArray.find((p) => p.m_is_local);
   const mapRotated = isMapRotatedForTeam(localTeam);
 
@@ -99,8 +102,8 @@ const Radar = ({
       id="radar"
       className="relative origin-center transition-transform duration-150 w-full max-w-[900px] overflow-visible bg-black"
       style={{
-        transform: `scale(${mapZoom})`,
-        maxWidth: `${900 / mapZoom}px`,
+        transform: `scale(${MAP_ZOOM})`,
+        maxWidth: `${900 / MAP_ZOOM}px`,
       }}
     >
       <div

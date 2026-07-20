@@ -1,0 +1,165 @@
+{
+  "dump_relative": "dumper/schema-dump/deadlock",
+  "output_relative": "usermode/src/sdk/dead_offsets.hpp",
+  "fields": [
+    {
+      "symbol": "m_pEntity",
+      "class": "CEntityInstance",
+      "field": "m_pEntity",
+      "comment": "CEntityInstance"
+    },
+    {
+      "symbol": "m_identityHandle",
+      "comment": "CEntityIdentity (handle)",
+      "fallback": "0x10",
+      "optional": true,
+      "note": "Not exported by schema dump; Source 2 identity layout default"
+    },
+    {
+      "symbol": "m_designerName",
+      "class": "CEntityIdentity",
+      "field": "m_designerName",
+      "comment": "CEntityIdentity",
+      "fallback": "0x20",
+      "optional": true,
+      "note": "Falls back if missing from client.txt"
+    },
+    {
+      "symbol": "m_pGameSceneNode",
+      "class": "C_BaseEntity",
+      "field": "m_pGameSceneNode",
+      "comment": "C_BaseEntity"
+    },
+    {
+      "symbol": "m_iHealth",
+      "class": "C_BaseEntity",
+      "field": "m_iHealth",
+      "comment": "C_BaseEntity"
+    },
+    {
+      "symbol": "m_iTeamNum",
+      "class": "C_BaseEntity",
+      "field": "m_iTeamNum",
+      "comment": "C_BaseEntity"
+    },
+    {
+      "symbol": "m_vecAbsOrigin",
+      "class": "CGameSceneNode",
+      "field": "m_vecAbsOrigin",
+      "comment": "CGameSceneNode"
+    },
+    {
+      "symbol": "m_bDormant",
+      "class": "CGameSceneNode",
+      "field": "m_bDormant",
+      "comment": "CGameSceneNode"
+    },
+    {
+      "symbol": "m_iszPlayerName",
+      "class": "CBasePlayerController",
+      "field": "m_iszPlayerName",
+      "comment": "CBasePlayerController"
+    },
+    {
+      "symbol": "m_steamID",
+      "class": "CBasePlayerController",
+      "field": "m_steamID",
+      "comment": "CBasePlayerController"
+    },
+    {
+      "symbol": "m_bIsLocalPlayerController",
+      "class": "CBasePlayerController",
+      "field": "m_bIsLocalPlayerController",
+      "comment": "CBasePlayerController"
+    },
+    {
+      "symbol": "m_hHeroPawn",
+      "class": "CCitadelPlayerController",
+      "field": "m_hHeroPawn",
+      "comment": "CCitadelPlayerController"
+    },
+    {
+      "symbol": "m_PlayerDataGlobal",
+      "class": "CCitadelPlayerController",
+      "field": "m_PlayerDataGlobal",
+      "comment": "CCitadelPlayerController"
+    },
+    {
+      "symbol": "pdg_m_iHealthMax",
+      "class": "PlayerDataGlobal_t",
+      "field": "m_iHealthMax",
+      "comment": "PlayerDataGlobal_t (relative)"
+    },
+    {
+      "symbol": "pdg_m_nHeroID",
+      "class": "PlayerDataGlobal_t",
+      "field": "m_nHeroID",
+      "comment": "PlayerDataGlobal_t (relative)"
+    },
+    {
+      "symbol": "pdg_m_iHealth",
+      "class": "PlayerDataGlobal_t",
+      "field": "m_iHealth",
+      "comment": "PlayerDataGlobal_t (relative)"
+    },
+    {
+      "symbol": "pdg_m_bAlive",
+      "class": "PlayerDataGlobal_t",
+      "field": "m_bAlive",
+      "comment": "PlayerDataGlobal_t (relative)"
+    },
+    {
+      "symbol": "m_angEyeAngles",
+      "class": "C_CitadelPlayerPawn",
+      "field": "m_angEyeAngles",
+      "comment": "C_CitadelPlayerPawn"
+    },
+    {
+      "symbol": "m_aPlayerControllers",
+      "class": "C_Team",
+      "field": "m_aPlayerControllers",
+      "comment": "C_Team / C_CitadelTeam"
+    },
+    {
+      "symbol": "m_aPlayers",
+      "class": "C_Team",
+      "field": "m_aPlayers",
+      "comment": "C_Team / C_CitadelTeam"
+    },
+    {
+      "symbol": "m_vMinimapMins",
+      "class": "C_CitadelGameRules",
+      "field": "m_vMinimapMins",
+      "comment": "C_CitadelGameRules"
+    },
+    {
+      "symbol": "m_vMinimapMaxs",
+      "class": "C_CitadelGameRules",
+      "field": "m_vMinimapMaxs",
+      "comment": "C_CitadelGameRules"
+    }
+  ],
+  "globals": [
+    {
+      "symbol": "rva_game_entity_system",
+      "kind": "module_pointer",
+      "module": "client.dll",
+      "name": "CGameEntitySystem",
+      "comment": "client.dll global (entity system)"
+    },
+    {
+      "symbol": "rva_local_controller",
+      "kind": "schema_singleton",
+      "module": "client.dll",
+      "name": "CCitadelPlayerController",
+      "comment": "client.dll local controller singleton"
+    },
+    {
+      "symbol": "rva_game_rules",
+      "kind": "schema_singleton",
+      "module": "client.dll",
+      "name": "C_CitadelGameRules",
+      "comment": "client.dll game rules singleton"
+    }
+  ]
+}

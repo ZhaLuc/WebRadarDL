@@ -23,3 +23,17 @@ usermode/release/*.pdb
 usermode/release/usermode.exe
 WebRadarDL.pdb
 launcher/release/intermediates/
+
+# Dezlock dump bulk (codegen only needs client.txt + _globals.txt)
+dumper/schema-dump/deadlock/hierarchy/
+dumper/schema-dump/deadlock/internal-sdk/
+dumper/schema-dump/deadlock/sdk/
+dumper/schema-dump/deadlock/signatures/
+dumper/schema-dump/deadlock/animationsystem.txt
+dumper/schema-dump/deadlock/particles.txt
+dumper/schema-dump/deadlock/pulse_system.txt
+dumper/schema-dump/deadlock/server.txt
+dumper/schema-dump/deadlock/_access-paths.txt
+dumper/schema-dump/deadlock/_all-modules.json
+dumper/schema-dump/deadlock/_entity-paths.txt
+dumper/schema-dump/deadlock/_protobuf-messages.txt

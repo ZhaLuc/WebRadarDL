@@ -1,6 +1,6 @@
 # Map & calibration
 
-WebRadarDL overlays live player positions on a **StatLocker-style Deadlock minimap**. World coordinates from the game must be transformed into normalized 0–1 space, then mapped to CSS percentages on the circular radar.
+WebRadarDL overlays live player positions on a **StatLocker-style Deadlock minimap**. World coordinates from the game must be transformed into normalized 0-1 space, then mapped to CSS percentages on the circular radar.
 
 ---
 
@@ -9,7 +9,7 @@ WebRadarDL overlays live player positions on a **StatLocker-style Deadlock minim
 ```mermaid
 flowchart LR
   WORLD[World XYZ<br/>from game memory]
-  NORM[Normalized 0–1<br/>getRadarPosition]
+  NORM[Normalized 0-1<br/>getRadarPosition]
   CSS[CSS % on map<br/>Radar component]
   WORLD --> NORM
   NORM --> CSS
@@ -114,23 +114,24 @@ Shipped in `webapp/public/data/deadlock/data.json`:
 | `scaleY` | `1.194` | Vertical stretch |
 | `offsetX` | `0.24` | Shift dots right |
 | `offsetY` | `0.14` | Shift dots down |
-| `mapZoom` | `0.82` | Shrink background art |
+| `mapZoom` | `0.82` | Fixed display zoom (not user-adjustable) |
 | `flipY` | `true` | Match Source Y axis |
 
 ---
 
 ## Interactive calibration UI
 
-**Settings → Calibrate Map**
+**Settings → Calibrate**
 
 | Control | Adjusts |
 |---------|---------|
 | Scale sliders | `scaleX`, `scaleY` |
 | Offset sliders | `offsetX`, `offsetY` |
-| Map zoom | `mapZoom` |
 | Flip toggles | `flipX`, `flipY` |
 | Nudge pad | ±0.01 on offsets per click |
 | Fixed bounds toggle | `useFixedBounds` + min/max fields |
+
+Map zoom is fixed at `0.82` in the radar renderer so calibration stays aligned with the map art.
 
 ### Calibrate mode
 
@@ -150,7 +151,7 @@ Enables overlay with pulsing **YOU** marker at local player position. Stand on a
 | `webapp/src/data/deadlock/map-definition.json` | Layer metadata |
 | `webapp/src/components/statlockermap.jsx` | Renders masked circular map |
 
-`mapZoom` applies CSS `transform: scale()` to the artwork layer independently of dot positions.
+`mapZoom` applies CSS `transform: scale()` to the radar container (fixed at `0.82`). Do not expose a zoom slider - changing zoom shifts how calibrated dots sit on the art.
 
 ---
 

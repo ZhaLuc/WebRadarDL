@@ -27,6 +27,11 @@ namespace
 	}
 }
 
+void f::players::clear_position_cache()
+{
+	s_last_positions.clear();
+}
+
 bool f::players::get_data(const player_entry_t& entry)
 {
 	if (!entry.m_stats.m_valid)

@@ -67,7 +67,7 @@ flowchart TD
 | Symptom | Connected but empty `m_players` |
 |---------|-----------------------------------|
 | Cause | Offsets outdated after game patch |
-| Fix | Update `dead_offsets.hpp`, rebuild - see [SDK & offsets](./sdk-and-offsets.md) |
+| Fix | Refresh `dumper/schema-dump/deadlock/`, run `.\tools\generate_offsets.ps1`, rebuild - see [SDK & offsets](./sdk-and-offsets.md) |
 
 ### `entity_system_ok: false`
 

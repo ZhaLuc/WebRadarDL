@@ -68,7 +68,7 @@ flowchart TD
 | `core/sdk.cpp` | Local controller pointer update |
 | `features/features.cpp` | Player scan (full + fast), bounds, JSON assembly |
 | `features/players/players.cpp` | Per-player JSON fields (HP, position, hero) |
-| `sdk/dead_offsets.hpp` | **Hardcoded offsets** - update after game patches |
+| `sdk/dead_offsets.hpp` | **Generated offsets** - refresh dump + `generate_offsets.ps1` after patches |
 | `sdk/entity.hpp` | Entity/controller/pawn wrappers |
 | `sdk/player_stats.hpp` | `PlayerDataGlobal` health/hero validation |
 | `sdk/hero_ids.hpp` | Hero ID → slug map |
@@ -98,7 +98,7 @@ flowchart TD
 | `player.jsx` | Single hero dot on map |
 | `playercard.jsx` | Side panel HP + portrait |
 | `statlockermap.jsx` | Layered minimap renderer |
-| `settings.jsx` | Settings panel (share, display, calibrate, debug) |
+| `settings.jsx` | Settings panel (share, display, performance, calibrate, debug) |
 | `heroportrait.jsx` | Hero image with fallback |
 | `maskedicon.jsx` | SVG mask icons |
 
@@ -121,11 +121,25 @@ flowchart TD
 
 ---
 
+## `dumper/`
+
+| Path | Role |
+|------|------|
+| `dezlock-dump.exe` / `dezlock-worker.dll` | Schema dumper for Deadlock |
+| `schema-dump/deadlock/client.txt` | Class field map (codegen input) |
+| `schema-dump/deadlock/_globals.txt` | Module RVAs / singletons (codegen input) |
+
+Bulk dump folders (`hierarchy/`, `sdk/`, etc.) are gitignored - only the two codegen inputs above are required.
+
+---
+
 ## `tools/`
 
 | Path | Role |
 |------|------|
 | `.gitkeep` | Ensures folder exists in git |
+| `generate_offsets.ps1` | Runs offset codegen against the dump |
+| `offset-codegen/` | Python bridge + `fields.json` allowlist |
 | `cloudflared.exe` | Downloaded at runtime (gitignored) |
 
 ---
@@ -149,6 +163,7 @@ Technical documentation (this folder).
 | `webapp/node_modules/` | Restored via `npm install` on first run |
 | `usermode/vcpkg_installed/` | Restored by MSVC/vcpkg on build |
 | `**/intermediates/`, `*.pdb` | Build artifacts |
+| `dumper/schema-dump/...` bulk | Huge SDK trees - keep `client.txt` + `_globals.txt` only |
 | Runtime session files | Ephemeral per session |
 
 ---
@@ -157,3 +172,4 @@ Technical documentation (this folder).
 
 - [Architecture](./architecture.md)
 - [Build & release](./build-and-release.md)
+- [SDK & offsets](./sdk-and-offsets.md)

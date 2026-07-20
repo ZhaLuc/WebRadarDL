@@ -10,7 +10,7 @@
 #define GET_SCHEMA_SYSTEM "48 89 05 ? ? ? ? 4c 8d 0d ? ? ? ? 33 c0"
 #define GET_ENTITY_LIST "48 8b 0d ? ? ? ? 8b d0 e8 ? ? ? ? 44 8b 83 c0 00 00 00"
 
-/* RVA fallbacks from dezlock dump (2026-07-05) - use dl_off:: namespace in dead_offsets.hpp */
+/* RVA fallbacks - auto-generated into sdk/dead_offsets.hpp via tools/generate_offsets.ps1 */
 
 /* custom defines */
 #define LOG_INFO(str, ...) \

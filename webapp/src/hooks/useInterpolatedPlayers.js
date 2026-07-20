@@ -26,13 +26,23 @@ function smoothPosition(current, target, alpha) {
   };
 }
 
-export function useInterpolatedPlayers(playerArray, { enabled = true } = {}) {
+export function useInterpolatedPlayers(
+  playerArray,
+  { enabled = true, resetToken = 0 } = {}
+) {
   const [displayPlayers, setDisplayPlayers] = useState(playerArray);
   const targetsRef = useRef(new Map());
   const displayRef = useRef(new Map());
   const lastPacketAtRef = useRef(0);
   const frameRef = useRef(0);
   const lastFrameAtRef = useRef(0);
+
+  useEffect(() => {
+    targetsRef.current.clear();
+    displayRef.current.clear();
+    lastPacketAtRef.current = 0;
+    setDisplayPlayers([]);
+  }, [resetToken]);
 
   useEffect(() => {
     if (!enabled) {

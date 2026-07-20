@@ -136,7 +136,7 @@ Synced to viewers via `session_share` messages.
 | `flipX` / `flipY` | Mirror normalized coordinates |
 | `scaleX` / `scaleY` | Stretch around map center |
 | `offsetX` / `offsetY` | Translate normalized position |
-| `mapZoom` | CSS scale of minimap artwork |
+| `mapZoom` | Fixed CSS scale of minimap (`0.82`) - not user-adjustable |
 | `useFixedBounds` | Ignore live `m_minimap_*` from game |
 | `minX`..`maxY` | Fixed world bounds when enabled |
 

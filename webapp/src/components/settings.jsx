@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   calibrationToDataJson,
   DEFAULT_CALIBRATION,
@@ -163,12 +163,40 @@ const SettingsButton = ({
   heroMap,
   isHost = true,
   shareInfo,
+  onReloadMap,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tab, setTab] = useState(isHost ? "share" : "display");
   const [copied, setCopied] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState("");
   const [fineStep, setFineStep] = useState(false);
+  const [reloadFlash, setReloadFlash] = useState(false);
+  const rootRef = useRef(null);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined;
+    }
+
+    const onPointerDown = (event) => {
+      if (rootRef.current && !rootRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isOpen]);
 
   const updateCalibration = (patch) => {
     onCalibrationChange({ ...calibration, ...patch });
@@ -211,55 +239,84 @@ const SettingsButton = ({
     });
   };
 
+  const handleReloadMap = () => {
+    onReloadMap?.();
+    setReloadFlash(true);
+    setTimeout(() => setReloadFlash(false), 2000);
+  };
+
+  const patchSettings = (patch) => onSettingsChange({ ...settings, ...patch });
+
   return (
-    <div className="z-50 flex flex-col items-end gap-2">
-      {isHost && (
+    <div ref={rootRef} className="relative z-50 flex flex-col items-end gap-2">
+      <div className="flex flex-col items-end gap-2">
+        {isHost && (
+          <button
+            type="button"
+            onClick={handleReloadMap}
+            className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
+              reloadFlash
+                ? "bg-emerald-500/90 text-black"
+                : "bg-radar-panel/80 text-radar-primary border border-radar-secondary/30"
+            }`}
+          >
+            {reloadFlash ? "Map Reloading..." : "Reload Map"}
+          </button>
+        )}
+
+        {isHost && (
+          <button
+            type="button"
+            onClick={() => {
+              setTab("share");
+              setIsOpen(true);
+            }}
+            className="text-xs px-3 py-1.5 rounded-lg font-semibold transition-all bg-radar-primary text-[#1E3A54] hover:brightness-110"
+          >
+            Share
+          </button>
+        )}
+
         <button
           type="button"
-          onClick={() => {
-            onCalibrationModeChange(!calibrationMode);
-            setIsOpen(true);
-            setTab("calibrate");
-          }}
-          className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
-            calibrationMode
-              ? "bg-amber-500/90 text-black"
-              : "bg-radar-panel/80 text-radar-primary border border-radar-secondary/30"
-          }`}
+          onClick={() => setIsOpen((open) => !open)}
+          className="flex items-center gap-1 transition-all rounded-xl bg-radar-panel/80 px-2 py-1"
         >
-          {calibrationMode ? "Calibration ON" : "Calibrate Map"}
+          <img className="w-[1.3rem]" src="./assets/icons/cog.svg" alt="" />
+          <span className="text-radar-primary text-sm">Settings</span>
         </button>
-      )}
-
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 transition-all rounded-xl bg-radar-panel/80 px-2 py-1"
-      >
-        <img className="w-[1.3rem]" src="./assets/icons/cog.svg" alt="" />
-        <span className="text-radar-primary text-sm">Settings</span>
-      </button>
+      </div>
 
       {isOpen && (
-        <div className="absolute right-0 top-20 w-96 max-h-[80vh] overflow-y-auto bg-radar-panel/95 backdrop-blur-lg rounded-xl p-4 shadow-xl border border-radar-secondary/20">
-          <div className="flex gap-2 mb-4 flex-wrap">
-            {(isHost
-              ? ["share", "display", "calibrate", "debug"]
-              : ["display", "debug"]
-            ).map((name) => (
-              <button
-                key={name}
-                type="button"
-                onClick={() => setTab(name)}
-                className={`text-xs px-2 py-1 rounded capitalize ${
-                  tab === name
-                    ? "bg-radar-primary text-[#1E3A54]"
-                    : "text-radar-secondary"
-                }`}
-              >
-                {name}
-              </button>
-            ))}
+        <div className="absolute right-0 top-full mt-2 w-96 max-h-[min(80vh,40rem)] overflow-y-auto bg-radar-panel/95 backdrop-blur-lg rounded-xl p-4 shadow-xl border border-radar-secondary/20">
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <div className="flex gap-2 flex-wrap">
+              {(isHost
+                ? ["share", "display", "performance", "calibrate", "debug"]
+                : ["display", "debug"]
+              ).map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  onClick={() => setTab(name)}
+                  className={`text-xs px-2 py-1 rounded capitalize ${
+                    tab === name
+                      ? "bg-radar-primary text-[#1E3A54]"
+                      : "text-radar-secondary"
+                  }`}
+                >
+                  {name}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="shrink-0 text-xs px-2 py-1 rounded bg-black/30 text-radar-secondary hover:text-radar-primary"
+              title="Close settings"
+            >
+              Close
+            </button>
           </div>
 
           {tab === "share" && isHost && (
@@ -336,8 +393,28 @@ const SettingsButton = ({
                 <p>3. Only share with people you trust - anyone with the link can watch.</p>
                 <p>
                   Viewers connected:{" "}
-                  <span className="text-radar-primary">{shareInfo?.viewerCount ?? 0}</span>
+                  <span className="text-radar-primary font-semibold">
+                    {shareInfo?.viewerCount ?? 0}
+                  </span>
                 </p>
+                <button
+                  type="button"
+                  onClick={() => copyShareUrl(primaryShareUrl)}
+                  className="w-full text-left mt-1 rounded bg-black/30 border border-radar-secondary/20 px-2 py-1.5 hover:border-radar-primary/40 transition-colors"
+                  title="Click to copy friend link"
+                >
+                  <div className="text-[9px] uppercase tracking-wide text-radar-secondary mb-0.5">
+                    Friend link (works anywhere)
+                  </div>
+                  <div className="text-radar-primary font-mono text-[10px] truncate">
+                    {copiedUrl === primaryShareUrl
+                      ? "Copied!"
+                      : publicUrl ||
+                        (tunnelStatus === "starting"
+                          ? "Public link starting..."
+                          : primaryShareUrl)}
+                  </div>
+                </button>
               </div>
 
               <button
@@ -368,18 +445,131 @@ const SettingsButton = ({
                 min={0.5}
                 max={2}
                 step={0.1}
-                onChange={(dotSize) => onSettingsChange({ ...settings, dotSize })}
+                onChange={(dotSize) => patchSettings({ dotSize })}
                 display={`${settings.dotSize}x`}
               />
-              <Slider
-                label="Map zoom (fit full map)"
-                value={calibration.mapZoom ?? 0.82}
-                min={0.55}
-                max={1.2}
-                step={0.01}
-                onChange={(mapZoom) => updateCalibration({ mapZoom })}
-                display={`${((calibration.mapZoom ?? 0.82) * 100).toFixed(0)}%`}
-              />
+              {isHost && (
+                <div className="rounded-lg bg-black/25 border border-radar-secondary/20 p-3 space-y-2">
+                  <div className="text-radar-primary text-xs font-semibold">
+                    Map refresh
+                  </div>
+                  <p className="text-[10px] text-radar-secondary leading-relaxed">
+                    Use after leaving the lobby and entering a match if heroes show in the
+                    side cards but dots are missing or stuck off-map. Clears cached
+                    lobby positions and forces a fresh entity scan.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleReloadMap}
+                    className="w-full text-xs py-2 rounded-lg bg-radar-primary/90 text-[#1E3A54] font-semibold hover:bg-radar-primary"
+                  >
+                    {reloadFlash ? "Reloading..." : "Reload Map"}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {tab === "performance" && isHost && (
+            <div className="space-y-3">
+              <div className="rounded-lg bg-black/25 border border-radar-secondary/20 p-3 space-y-2">
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <div className="text-radar-primary text-xs font-semibold">
+                      Performance Mode
+                    </div>
+                    <p className="text-[10px] text-radar-secondary leading-relaxed mt-1">
+                      Reduces how often the memory reader scans Deadlock. Helps when
+                      in-game FPS dips while WebRadarDL is running.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      patchSettings({ performanceMode: !settings.performanceMode })
+                    }
+                    className={`shrink-0 text-xs px-3 py-1.5 rounded-lg font-semibold ${
+                      settings.performanceMode
+                        ? "bg-emerald-500/90 text-black"
+                        : "bg-radar-secondary/20 text-radar-secondary"
+                    }`}
+                  >
+                    {settings.performanceMode ? "ON" : "OFF"}
+                  </button>
+                </div>
+              </div>
+
+              <div
+                className={`space-y-3 ${
+                  settings.performanceMode ? "" : "opacity-45 pointer-events-none"
+                }`}
+              >
+                <Slider
+                  label="Update rate"
+                  hint="Lower = less game strain, slightly less smooth dots"
+                  value={settings.perfUpdateHz ?? 10}
+                  min={5}
+                  max={20}
+                  step={1}
+                  onChange={(perfUpdateHz) => patchSettings({ perfUpdateHz })}
+                  display={`${settings.perfUpdateHz ?? 10} Hz`}
+                />
+                <Slider
+                  label="Full entity scan interval"
+                  hint="How often to rediscover players (lobby → match needs a scan)"
+                  value={(settings.perfFullScanMs ?? 2000) / 1000}
+                  min={0.5}
+                  max={3}
+                  step={0.1}
+                  onChange={(seconds) =>
+                    patchSettings({ perfFullScanMs: Math.round(seconds * 1000) })
+                  }
+                  display={`${((settings.perfFullScanMs ?? 2000) / 1000).toFixed(1)}s`}
+                />
+                <label className="flex items-start gap-2 rounded-lg bg-black/20 p-2.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={!!settings.perfLowPriority}
+                    onChange={(e) =>
+                      patchSettings({ perfLowPriority: e.target.checked })
+                    }
+                    className="mt-0.5 accent-amber-400"
+                  />
+                  <span>
+                    <span className="text-radar-primary text-xs font-medium block">
+                      Lower reader process priority
+                    </span>
+                    <span className="text-[10px] text-radar-secondary leading-snug">
+                      Gives Deadlock more CPU time when both run on the same PC.
+                    </span>
+                  </span>
+                </label>
+                <label className="flex items-start gap-2 rounded-lg bg-black/20 p-2.5 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={!!settings.perfSkipUnchanged}
+                    onChange={(e) =>
+                      patchSettings({ perfSkipUnchanged: e.target.checked })
+                    }
+                    className="mt-0.5 accent-amber-400"
+                  />
+                  <span>
+                    <span className="text-radar-primary text-xs font-medium block">
+                      Skip unchanged packets
+                    </span>
+                    <span className="text-[10px] text-radar-secondary leading-snug">
+                      Do not resend WebSocket data when nothing moved.
+                    </span>
+                  </span>
+                </label>
+              </div>
+
+              {!settings.performanceMode && (
+                <p className="text-[10px] text-radar-secondary leading-relaxed">
+                  Default when off: 20 Hz updates, full scan every ~0.2s, normal
+                  priority.
+                </p>
+              )}
             </div>
           )}
 
@@ -628,6 +818,12 @@ const SettingsButton = ({
                     </span>
                   </div>
                   <div>reader version: {debugData.reader_version ?? "?"}</div>
+                  <div>
+                    performance:{" "}
+                    {debugData.performance_mode ? "ON" : "OFF"} /{" "}
+                    {debugData.update_hz ?? "?"} Hz / scan every{" "}
+                    {debugData.full_scan_every ?? "?"} ticks
+                  </div>
                   <div>scan: {debugData.scan_method ?? "?"}</div>
                   <div>entity system: {debugData.entity_system_source ?? "?"}</div>
                   <div>local team: {debugData.local_team ?? "?"}</div>

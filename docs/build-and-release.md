@@ -117,7 +117,7 @@ Invoke-WebRequest -Uri "https://github.com/cloudflare/cloudflared/releases/lates
 
 ```mermaid
 flowchart TD
-  A[Update offsets if needed] --> B[Build Release x64]
+  A[Refresh dump + generate_offsets.ps1] --> B[Build Release x64]
   B --> C[npm run build]
   C --> D[Verify config.json]
   D --> E[Test WebRadarDL.exe end-to-end]

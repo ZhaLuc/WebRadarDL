@@ -91,7 +91,10 @@ flowchart TB
 - **Automatic first-run setup** - `npm install`, optional `npm run build`
 - **Windows firewall rule** for LAN viewers (Private profile, TCP 5173)
 - **Public share links** via auto-downloaded `cloudflared`
-- **Session sync** - calibration and dot size pushed to remote viewers
+- **Share HUD** - top-right Share button; top-left viewer count and click-to-copy friend link
+- **Reload Map** - clear stuck lobby dots and force a fresh entity scan
+- **Performance mode** - host-tunable update rate, full-scan interval, and lighter reader options
+- **Session sync** - calibration and display settings pushed to remote viewers
 - **Debug panel** - entity system source, scan mode, controller counts
 
 ### Developer-facing
@@ -99,6 +102,7 @@ flowchart TB
 - Full technical docs in [`docs/`](./docs/README.md)
 - Committed production build in `webapp/dist/`
 - Prebuilt `WebRadarDL.exe` and `radar_reader.exe`
+- **Offset codegen bridge** - `dumper/` schema dump → `tools/generate_offsets.ps1` → `dead_offsets.hpp`
 - Documented JSON protocol and offset workflow
 
 ---
@@ -210,7 +214,7 @@ sequenceDiagram
 
 The reader sleeps **50 ms** per tick (**20 Hz**):
 
-- Every **4th** tick: **full entity scan** (indices 0–2047, discover controllers)
+- Every **4th** tick: **full entity scan** (indices 0-2047, discover controllers)
 - Other ticks: **fast refresh** (cached controller list, update positions/HP)
 
 The UI runs `requestAnimationFrame` interpolation (~60 FPS) so dots move smoothly between packets.
@@ -240,8 +244,8 @@ Payload fields include `m_players`, `m_local_team`, `m_minimap_mins` / `m_minima
 
 - **Center:** circular minimap with team-colored dots
 - **Left / right columns:** player cards with hero art and HP
-- **Top:** connection status indicator
-- **Bottom-right:** settings gear
+- **Top-left:** connection status, viewer count, click-to-copy friend link (host)
+- **Top-right:** Reload Map, Share, and Settings
 
 ![Player cards with HP](./Media/06-player-cards.png)
 
@@ -251,8 +255,10 @@ Payload fields include `m_players`, `m_local_team`, `m_minimap_mins` / `m_minima
 
 | Tab | Purpose |
 |-----|---------|
-| **Share** | Copy localhost, LAN, and public URLs; End Program |
-| **Calibrate Map** | Offset, scale, zoom, flip - align dots to landmarks |
+| **Share** | Friend / LAN / public URLs, viewer count, End Program |
+| **Display** | Dot size; Reload Map |
+| **Performance** | Reader update rate and scan options (host) |
+| **Calibrate** | Offset, scale, flip - align dots to landmarks (fixed map zoom) |
 | **Debug** | Reader diagnostics, entity system, scan mode |
 
 ![Calibration mode](./Media/08-settings-calibration.png)
@@ -265,7 +271,7 @@ Payload fields include `m_players`, `m_local_team`, `m_minimap_mins` / `m_minima
 
 ## Sharing
 
-Open **Settings → Share** on the host machine.
+Open **Share** (top-right) or **Settings → Share** on the host machine. The public friend link is also shown top-left - click it to copy.
 
 | Link type | Who can use it | URL example |
 |-----------|----------------|-------------|
@@ -345,7 +351,7 @@ npm run build
 
 Skip if you did not change UI - `webapp/dist/` is prebuilt in the repo.
 
-After game patches, update offsets in `usermode/src/sdk/dead_offsets.hpp` and rebuild.
+After game patches, replace `dumper/schema-dump/deadlock/`, run `.\tools\generate_offsets.ps1`, and rebuild.
 
 Guide: [Build & release](./docs/build-and-release.md) · [SDK & offsets](./docs/sdk-and-offsets.md)
 
@@ -369,7 +375,11 @@ WebRadarDL/
 │   ├── dist/                   # Built React app (committed)
 │   ├── src/                    # React source
 │   └── public/                 # Heroes, maps, data.json
-├── tools/                      # cloudflared.exe (runtime download)
+├── dumper/                     # Schema dump + dezlock dumper (offsets)
+├── tools/
+│   ├── generate_offsets.ps1    # Dump → dead_offsets.hpp
+│   ├── offset-codegen/         # Python offset bridge
+│   └── cloudflared.exe         # Runtime download (not committed)
 ├── Media/                      # Screenshots for documentation
 └── docs/                       # Full technical documentation
 ```
@@ -440,7 +450,7 @@ Optional: `15-visual-studio-build.png`, `16-deadlock-not-running.png`
 |---------|--------------|-----|
 | `waiting-usermode` | UAC dismissed / reader not running | Restart; approve UAC |
 | `waiting-game` | Deadlock not in match | Launch game; enter match |
-| No dots after patch | Stale offsets | Update `dead_offsets.hpp`, rebuild |
+| No dots after patch | Stale offsets | Refresh dump + `generate_offsets.ps1`, rebuild |
 | No public URL | Tunnel blocked | Check `.cloudflared.log`, antivirus |
 | LAN viewer timeout | Firewall / wrong network | Same Wi-Fi; Private profile |
 | Misaligned dots | Calibration drift | Settings → Calibrate Map |

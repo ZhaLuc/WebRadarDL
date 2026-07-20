@@ -1,152 +1,125 @@
 # SDK & offsets
 
-The memory reader targets **Valve Source 2** structures inside `deadlock.exe`. Offsets are maintained in `usermode/src/sdk/dead_offsets.hpp` and supplemented by pattern scanning and optional schema dumps.
+The memory reader targets **Valve Source 2** structures inside `deadlock.exe`. Field offsets and module RVAs live in `usermode/src/sdk/dead_offsets.hpp`, which is **auto-generated** from a dezlock schema dump.
 
 ---
 
-## Offset maintenance model
+## Offset update workflow (post-patch)
 
 ```mermaid
 flowchart TD
-  PATCH[Game patch] --> CHECK{Patterns still valid?}
-  CHECK -->|yes| OK[No offset change]
-  CHECK -->|no| DUMP[Update dead_offsets.hpp]
-  DUMP --> BUILD[Rebuild radar_reader.exe]
-  BUILD --> TEST[Test in live match]
+  A[Run dumper/dezlock-dump.exe] --> B[Overwrite dumper/schema-dump/deadlock]
+  B --> C[tools/generate_offsets.ps1]
+  C --> D[usermode/src/sdk/dead_offsets.hpp]
+  D --> E[Rebuild Release x64]
+  E --> F[Test radar_reader.exe in a match]
 ```
 
-After most Deadlock updates, **`dead_offsets.hpp` must be refreshed** from a current dump (e.g. dezlock, cs2-dumper style tools for Source 2).
+### Steps
+
+1. Run **`dumper/dezlock-dump.exe`** against the updated game.
+2. Ensure output lands in (or replace) **`dumper/schema-dump/deadlock/`** with at least:
+   - `client.txt`
+   - `_globals.txt`
+3. Generate offsets:
+
+```powershell
+.\tools\generate_offsets.ps1
+```
+
+Or build `usermode` in Visual Studio - PreBuild runs the same script when the dump is present.
+
+4. Rebuild **Release | x64** (`radar_reader.exe`).
+5. Smoke-test in a live match.
+
+You do **not** hand-edit `dead_offsets.hpp`. Edit `tools/offset-codegen/fields.json` only if the radar needs a new field.
 
 ---
 
-## Primary offset file
+## Codegen bridge
 
-**Path:** `usermode/src/sdk/dead_offsets.hpp`
+| Path | Role |
+|------|------|
+| `tools/offset-codegen/generate_offsets.py` | Parses dump, writes header |
+| `tools/offset-codegen/fields.json` | Allowlist of fields + globals |
+| `tools/generate_offsets.ps1` | Convenience wrapper |
+| `dumper/schema-dump/deadlock/client.txt` | `Class.field = 0xNNN` map |
+| `dumper/schema-dump/deadlock/_globals.txt` | Module RVAs / singletons |
+| `usermode/src/sdk/dead_offsets.hpp` | Generated output (`dl_off::`) |
 
-### Entity & scene graph
+```powershell
+# Resolve only (no write)
+.\tools\generate_offsets.ps1 -Check
 
-| Symbol | Offset | Class |
-|--------|--------|-------|
-| `m_pEntity` | `0x10` | `CEntityInstance` |
-| `m_identityHandle` | `0x10` | `CEntityIdentity` |
-| `m_designerName` | `0x20` | `CEntityIdentity` |
-| `m_pGameSceneNode` | `0x330` | `C_BaseEntity` |
-| `m_iHealth` | `0x354` | `C_BaseEntity` |
-| `m_iTeamNum` | `0x3F3` | `C_BaseEntity` |
-| `m_vecAbsOrigin` | `0xC8` | `CGameSceneNode` |
-| `m_bDormant` | `0x103` | `CGameSceneNode` |
+# Custom dump path
+.\tools\generate_offsets.ps1 -Dump "D:\dumps\deadlock"
+```
 
-### Player controller
+---
 
-| Symbol | Offset | Class |
-|--------|--------|-------|
-| `m_iszPlayerName` | `0x6F0` | `CBasePlayerController` |
-| `m_steamID` | `0x778` | `CBasePlayerController` |
-| `m_bIsLocalPlayerController` | `0x780` | `CBasePlayerController` |
-| `m_hHeroPawn` | `0x8AC` | `CCitadelPlayerController` |
-| `m_PlayerDataGlobal` | `0x8F0` | `CCitadelPlayerController` |
+## What the generator pulls
 
-### PlayerDataGlobal_t (relative to `m_PlayerDataGlobal`)
+### Struct fields (from `client.txt`)
 
-| Symbol | Offset |
+| Symbol | Class.field |
+|--------|-------------|
+| `m_pEntity` | `CEntityInstance.m_pEntity` |
+| `m_pGameSceneNode` | `C_BaseEntity.m_pGameSceneNode` |
+| `m_iHealth` | `C_BaseEntity.m_iHealth` |
+| `m_iTeamNum` | `C_BaseEntity.m_iTeamNum` |
+| `m_vecAbsOrigin` | `CGameSceneNode.m_vecAbsOrigin` |
+| `m_bDormant` | `CGameSceneNode.m_bDormant` |
+| `m_iszPlayerName` | `CBasePlayerController.m_iszPlayerName` |
+| `m_steamID` | `CBasePlayerController.m_steamID` |
+| `m_bIsLocalPlayerController` | `CBasePlayerController.m_bIsLocalPlayerController` |
+| `m_hHeroPawn` | `CCitadelPlayerController.m_hHeroPawn` |
+| `m_PlayerDataGlobal` | `CCitadelPlayerController.m_PlayerDataGlobal` |
+| `pdg_m_iHealthMax` | `PlayerDataGlobal_t.m_iHealthMax` |
+| `pdg_m_nHeroID` | `PlayerDataGlobal_t.m_nHeroID` |
+| `pdg_m_iHealth` | `PlayerDataGlobal_t.m_iHealth` |
+| `pdg_m_bAlive` | `PlayerDataGlobal_t.m_bAlive` |
+| `m_angEyeAngles` | `C_CitadelPlayerPawn.m_angEyeAngles` |
+| `m_aPlayerControllers` | `C_Team.m_aPlayerControllers` |
+| `m_aPlayers` | `C_Team.m_aPlayers` |
+| `m_vMinimapMins` | `C_CitadelGameRules.m_vMinimapMins` |
+| `m_vMinimapMaxs` | `C_CitadelGameRules.m_vMinimapMaxs` |
+
+`m_identityHandle` / `m_designerName` use stable Source 2 defaults when missing from schema.
+
+### Module RVAs (from `_globals.txt`)
+
+| Symbol | Source |
 |--------|--------|
-| `pdg_m_iHealthMax` | `0x10` |
-| `pdg_m_nHeroID` | `0x1C` |
-| `pdg_m_iHealth` | `0x4C` |
-| `pdg_m_bAlive` | `0x68` |
-
-### Pawn & team
-
-| Symbol | Offset | Class |
-|--------|--------|-------|
-| `m_angEyeAngles` | `0x11B8` | `C_CitadelPlayerPawn` |
-| `m_aPlayerControllers` | `0x5F0` | `C_CitadelTeam` |
-| `m_aPlayers` | `0x608` | `C_CitadelTeam` |
-
-### Game rules & globals (RVA in `client.dll`)
-
-| Symbol | RVA | Purpose |
-|--------|-----|---------|
-| `rva_game_entity_system` | `0x30820D0` | Entity list fallback |
-| `rva_local_controller` | `0x2DCA358` | Local player controller |
-| `rva_game_rules` | `0x3792FD0` | Minimap bounds |
-| `m_vMinimapMins` | `0x84` | Relative to game rules |
-| `m_vMinimapMaxs` | `0x90` | Relative to game rules |
-
-*RVA values are version-specific - update after patches.*
+| `rva_game_entity_system` | `client.dll::CGameEntitySystem` |
+| `rva_local_controller` | `# CCitadelPlayerController @ client.dll+...` |
+| `rva_game_rules` | `# C_CitadelGameRules @ client.dll+...` |
 
 ---
 
-## Pattern scanning
+## Patterns (not codegen)
 
-Defined in `usermode/src/common.hpp`:
+Byte signatures in `usermode/src/common.hpp` (`GET_ENTITY_LIST`, `GET_SCHEMA_SYSTEM`) are still scanned at runtime. Entity list prefers the pattern; RVAs are fallbacks. If a patch breaks pattern scan, retune signatures manually.
 
-| Macro | Module | Resolves |
-|-------|--------|----------|
-| `GET_SCHEMA_SYSTEM` | `schemasystem.dll` | Schema interface |
-| `GET_ENTITY_LIST` | `client.dll` | `CGameEntitySystem*` |
-
-**Resolution order** (`interfaces.cpp`):
-
-1. Try pattern `GET_ENTITY_LIST` → `entity_system_source = "pattern"`
-2. Fallback RVA `rva_game_entity_system` → `entity_system_source = "rva"`
-
-Debug tab shows which path succeeded.
+Optional runtime schema (`schema::setup`) can still load live tables from `schemasystem.dll`, but the radar's production path uses the generated hardcoded offsets.
 
 ---
 
-## Entity system usage
+## Hero IDs
 
-```mermaid
-flowchart TD
-  ES[CGameEntitySystem] --> IDX[Index 0..2047]
-  IDX --> IDEN[Read designer name]
-  IDEN -->|citadel_player_controller| CTRL[Controller entry]
-  CTRL --> PAWN[Resolve m_hHeroPawn]
-  PAWN --> POS[Read m_vecAbsOrigin]
-```
+Hero ID → slug mapping is **not** part of the schema dump. Update:
 
-Handle mask constants (`ENT_ENTRY_MASK`, etc.) follow Source 2 entity handle layout.
+- `usermode/src/sdk/hero_ids.hpp`
+- `webapp/src/data/hero-id-map.json`
+- `webapp/public/heroes/hero_map.json`
+
+only when new heroes ship.
 
 ---
 
-## Schema system
+## Build
 
-`schema::setup()` optionally loads runtime schema tables for dynamic offset resolution.
+1. Open `usermode/DL_WebRadar.sln`
+2. **Release | x64**
+3. Build - PreBuild regenerates offsets when the dump folder exists
 
-**Current radar behavior:** primarily uses **hardcoded offsets** from `dead_offsets.hpp`. Schema failure logs a warning and continues:
-
-```text
-schema dump unavailable - using hardcoded offsets
-```
-
----
-
-## Hero ID → slug mapping
-
-`usermode/src/sdk/player_stats.cpp` (and related) maps numeric hero IDs to slugs consumed by the UI (`hero_map.json`).
-
-If a new hero ships:
-
-1. Add ID mapping in native code
-2. Add portrait + entry in `webapp/public/heroes/`
-
----
-
-## Game update checklist
-
-1. Launch updated Deadlock - note build ID / date
-2. Run offset dumper against `client.dll`
-3. Update `dead_offsets.hpp` RVAs and struct offsets
-4. Verify patterns in `common.hpp` still match
-5. Rebuild **Release | x64**
-6. Test: entity scan, HP, positions, minimap bounds
-7. Commit offset file with patch date comment
-
----
-
-## Related documents
-
-- [Memory reader](./memory-reader.md)
-- [Build & release](./build-and-release.md)
-- [Troubleshooting](./troubleshooting.md)
+Outputs: `usermode/release/radar_reader.exe`

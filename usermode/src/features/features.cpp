@@ -300,3 +300,10 @@ void f::get_player_info_fast()
 	m_debug["scan_method"] = "cached_refresh_v1";
 	m_debug["reader_version"] = 4;
 }
+
+void f::clear_caches()
+{
+	m_cached_entries.clear();
+	players::clear_position_cache();
+	m_debug["scan_method"] = "caches_cleared";
+}

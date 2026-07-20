@@ -42,6 +42,33 @@ export const getWebSocketUrl = () => {
 };
 
 export const SESSION_SHARE_TYPE = "session_share";
+export const READER_CONTROL_TYPE = "reader_control";
+export const VIEWER_HELLO_TYPE = "viewer_hello";
+export const HOST_HELLO_TYPE = "host_hello";
+
+export const DEFAULT_SETTINGS = {
+  dotSize: 1,
+  performanceMode: false,
+  perfUpdateHz: 10,
+  perfFullScanMs: 2000,
+  perfLowPriority: true,
+  perfSkipUnchanged: true,
+};
+
+export const buildPerformanceControlMessage = (settings) => ({
+  m_message_type: READER_CONTROL_TYPE,
+  m_command: "set_performance",
+  m_performance_mode: !!settings.performanceMode,
+  m_update_hz: Number(settings.perfUpdateHz) || 10,
+  m_full_scan_interval_ms: Number(settings.perfFullScanMs) || 2000,
+  m_low_priority: !!settings.perfLowPriority,
+  m_skip_unchanged: !!settings.perfSkipUnchanged,
+});
+
+export const buildReloadMapMessage = () => ({
+  m_message_type: READER_CONTROL_TYPE,
+  m_command: "reload_map",
+});
 
 export const DEFAULT_CALIBRATION = {
   flipX: false,
@@ -57,6 +84,9 @@ export const DEFAULT_CALIBRATION = {
   maxX: 8192,
   maxY: 8192,
 };
+
+/** Fixed map display zoom. Kept constant so calibration stays aligned with map art. */
+export const FIXED_MAP_ZOOM = 0.82;
 
 export const loadCalibration = () => {
   const saved = localStorage.getItem("deadlockMapCalibration");
@@ -182,7 +212,7 @@ export const calibrationToDataJson = (calibration) =>
       scaleY: Number(calibration.scaleY.toFixed(4)),
       offsetX: Number(calibration.offsetX.toFixed(4)),
       offsetY: Number(calibration.offsetY.toFixed(4)),
-      mapZoom: Number((calibration.mapZoom ?? 0.82).toFixed(4)),
+      mapZoom: FIXED_MAP_ZOOM,
       useFixedBounds: calibration.useFixedBounds,
       minX: calibration.minX,
       minY: calibration.minY,

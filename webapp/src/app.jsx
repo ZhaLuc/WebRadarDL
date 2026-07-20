@@ -13,22 +13,18 @@ import StatLockerMap from "./components/StatLockerMap";
 import SettingsButton from "./components/settings";
 
 import {
-
   loadCalibration,
-
   teamEnum,
-
   isRadarHost,
-
   getWebSocketUrl,
-
   SESSION_SHARE_TYPE,
-
+  READER_CONTROL_TYPE,
+  VIEWER_HELLO_TYPE,
+  HOST_HELLO_TYPE,
+  DEFAULT_SETTINGS,
+  buildPerformanceControlMessage,
+  buildReloadMapMessage,
 } from "./utilities/utilities";
-
-
-
-const DEFAULT_SETTINGS = { dotSize: 1 };
 
 
 
@@ -36,7 +32,7 @@ const loadSettings = () => {
 
   const saved = localStorage.getItem("deadlockRadarSettings");
 
-  return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
+  return saved ? { ...DEFAULT_SETTINGS, ...JSON.parse(saved) } : { ...DEFAULT_SETTINGS };
 
 };
 
@@ -68,7 +64,29 @@ const App = () => {
 
   const [shareInfo, setShareInfo] = useState(null);
 
+  const [mapReloadToken, setMapReloadToken] = useState(0);
+
+  const [friendLinkCopied, setFriendLinkCopied] = useState(false);
+
   const webSocketRef = useRef(null);
+
+  const sendReaderControl = (payload) => {
+    const webSocket = webSocketRef.current;
+    if (!webSocket || webSocket.readyState !== WebSocket.OPEN) {
+      return false;
+    }
+
+    webSocket.send(JSON.stringify(payload));
+    return true;
+  };
+
+  const reloadMap = () => {
+    setPlayerArray([]);
+    setBounds(undefined);
+    setDebugData(null);
+    setMapReloadToken((token) => token + 1);
+    sendReaderControl(buildReloadMapMessage());
+  };
 
 
 
@@ -212,11 +230,35 @@ const App = () => {
 
             JSON.stringify({
 
+              m_message_type: HOST_HELLO_TYPE,
+
+            })
+
+          );
+
+          webSocket.send(
+
+            JSON.stringify({
+
               m_message_type: SESSION_SHARE_TYPE,
 
               m_calibration: calibration,
 
               m_settings: settings,
+
+            })
+
+          );
+
+          webSocket.send(JSON.stringify(buildPerformanceControlMessage(settings)));
+
+        } else {
+
+          webSocket.send(
+
+            JSON.stringify({
+
+              m_message_type: VIEWER_HELLO_TYPE,
 
             })
 
@@ -296,6 +338,15 @@ const App = () => {
 
             return;
 
+          }
+
+          if (parsedData.m_message_type === READER_CONTROL_TYPE) {
+            if (parsedData.m_command === "reload_map") {
+              setPlayerArray([]);
+              setBounds(undefined);
+              setMapReloadToken((token) => token + 1);
+            }
+            return;
           }
 
 
@@ -410,6 +461,8 @@ const App = () => {
 
       );
 
+      webSocket.send(JSON.stringify(buildPerformanceControlMessage(settings)));
+
     }, 250);
 
 
@@ -422,6 +475,7 @@ const App = () => {
 
   const radarPlayers = useInterpolatedPlayers(playerArray, {
     enabled: !calibrationMode,
+    resetToken: mapReloadToken,
   });
 
   const teammates = playerArray.filter(
@@ -490,6 +544,26 @@ const App = () => {
 
   }[connectionStatus];
 
+  const friendLink =
+    shareInfo?.publicUrl ||
+    shareInfo?.viewerUrls?.[0] ||
+    shareInfo?.localUrl ||
+    null;
+
+  const copyFriendLink = async () => {
+    if (!friendLink) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(friendLink);
+      setFriendLinkCopied(true);
+      setTimeout(() => setFriendLinkCopied(false), 2000);
+    } catch {
+      // clipboard may be blocked
+    }
+  };
+
 
 
   return (
@@ -498,13 +572,75 @@ const App = () => {
 
       <div className="w-full h-full flex flex-col justify-center overflow-hidden relative bg-black">
 
-        <div className="absolute left-2.5 top-2.5 z-50 text-xs text-radar-secondary bg-radar-panel/80 px-2 py-1 rounded">
+        <div className="absolute left-2.5 top-2.5 z-50 flex flex-col gap-1.5 max-w-[min(26rem,72vw)]">
 
-          {statusMessage}
+          <div className="text-xs text-radar-secondary bg-radar-panel/80 px-2 py-1 rounded">
 
-          {!isHost && (
+            {statusMessage}
 
-            <span className="ml-2 text-radar-primary/80">(viewer)</span>
+            {!isHost && (
+
+              <span className="ml-2 text-radar-primary/80">(viewer)</span>
+
+            )}
+
+          </div>
+
+          {isHost && (
+
+            <div className="text-xs bg-radar-panel/80 border border-radar-secondary/20 px-2.5 py-2 rounded space-y-1.5">
+
+              <div className="text-radar-secondary">
+
+                Viewers connected:{" "}
+
+                <span className="text-radar-primary font-semibold">
+
+                  {shareInfo?.viewerCount ?? 0}
+
+                </span>
+
+              </div>
+
+              <button
+
+                type="button"
+
+                onClick={copyFriendLink}
+
+                disabled={!friendLink}
+
+                className="w-full text-left rounded bg-black/30 border border-radar-secondary/25 px-2 py-1.5 hover:border-radar-primary/50 transition-colors disabled:opacity-50 disabled:cursor-default"
+
+                title="Click to copy friend link"
+
+              >
+
+                <div className="text-[9px] uppercase tracking-wide text-radar-secondary mb-0.5">
+
+                  Friend link (works anywhere)
+
+                </div>
+
+                <div className="text-radar-primary font-mono text-[10px] truncate">
+
+                  {friendLinkCopied
+
+                    ? "Copied!"
+
+                    : friendLink ||
+
+                      (shareInfo?.tunnelStatus === "starting"
+
+                        ? "Public link starting..."
+
+                        : "Waiting for share link...")}
+
+                </div>
+
+              </button>
+
+            </div>
 
           )}
 
@@ -543,6 +679,8 @@ const App = () => {
             isHost={isHost}
 
             shareInfo={shareInfo}
+
+            onReloadMap={reloadMap}
 
           />
 

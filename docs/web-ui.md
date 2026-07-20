@@ -143,9 +143,20 @@ StatLocker art places Amber (team 2) at the bottom. When `localTeam === sapphire
 - `tunnelStatus`: `idle` | `starting` | `ready` | `failed`
 - **End Program** → `POST /api/shutdown`
 
-### Calibrate Map
+### Display
 
-- Sliders: `scaleX`, `scaleY`, `offsetX`, `offsetY`, `mapZoom`
+- Hero icon size (`dotSize`)
+- **Reload Map** (host) - clear caches and force a full entity scan
+
+### Performance (host)
+
+- Performance mode toggle
+- Update Hz, full-scan interval, low-priority / skip-unchanged options
+- Sends `reader_control` / `set_performance` over the WebSocket
+
+### Calibrate
+
+- Sliders: `scaleX`, `scaleY`, `offsetX`, `offsetY` (map zoom is fixed at `0.82`)
 - Toggles: `flipX`, `flipY`, `useFixedBounds`
 - Nudge pad for fine offset adjustment
 - Export JSON snippet for `data.json`
