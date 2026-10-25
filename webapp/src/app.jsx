@@ -13,9 +13,22 @@ import StatLockerMap from "./components/StatLockerMap";
 import SettingsButton from "./components/settings";
 
 import {
+  enemyIsNearSubject,
+  loadPingFollow,
+  loadPingSettings,
+  pingSubjectKey,
+  playEnemyProximityPing,
+  resolvePingSubject,
+  savePingFollow,
+  savePingSettings,
+  unlockProximityAudio,
+} from "./utilities/proximityPing";
+
+import {
   loadCalibration,
   teamEnum,
   isRadarHost,
+  getPlayerName,
   getWebSocketUrl,
   SESSION_SHARE_TYPE,
   READER_CONTROL_TYPE,
@@ -68,6 +81,11 @@ const App = () => {
 
   const [friendLinkCopied, setFriendLinkCopied] = useState(false);
 
+  const [pingSettings, setPingSettings] = useState(loadPingSettings);
+  const [pingFollowKey, setPingFollowKey] = useState(loadPingFollow);
+  const pingContactRef = useRef(false);
+  const lastPingAtRef = useRef(0);
+
   const webSocketRef = useRef(null);
 
   const sendReaderControl = (payload) => {
@@ -79,6 +97,45 @@ const App = () => {
     webSocket.send(JSON.stringify(payload));
     return true;
   };
+
+  const updatePingSettings = (patch) => {
+    unlockProximityAudio();
+    setPingSettings((current) => {
+      const next = { ...current, ...patch };
+      savePingSettings(next);
+      return next;
+    });
+  };
+
+  const selectPingSubject = (player) => {
+    const key = pingSubjectKey(player);
+    setPingFollowKey(key);
+    savePingFollow(key);
+    pingContactRef.current = false;
+  };
+
+  useEffect(() => {
+    if (!pingSettings.enabled) {
+      pingContactRef.current = false;
+      return;
+    }
+
+    const subject = resolvePingSubject(playerArray, pingFollowKey, isHost);
+    const inRange = enemyIsNearSubject(playerArray, subject, pingSettings.range);
+    if (!inRange) {
+      pingContactRef.current = false;
+      return;
+    }
+
+    const now = performance.now();
+    const firstContact = !pingContactRef.current;
+    const intervalMs = Math.max(1, pingSettings.intervalSec) * 1000;
+    if (firstContact || now - lastPingAtRef.current >= intervalMs) {
+      playEnemyProximityPing(pingSettings.sound, pingSettings.volume, firstContact);
+      lastPingAtRef.current = now;
+      pingContactRef.current = true;
+    }
+  }, [playerArray, pingSettings, pingFollowKey, isHost]);
 
   const reloadMap = () => {
     setPlayerArray([]);
@@ -506,6 +563,15 @@ const App = () => {
 
     bounds?.mins;
 
+  const playersOffMap =
+    isHost &&
+    playerArray.length > 0 &&
+    playerArray.every((player) => {
+      const x = player.m_position?.x ?? 0;
+      const y = player.m_position?.y ?? 0;
+      return !player.m_has_pawn || (x === 0 && y === 0);
+    });
+
   const teamLabel =
 
     localTeam === teamEnum.amber
@@ -682,6 +748,15 @@ const App = () => {
 
             onReloadMap={reloadMap}
 
+            pingSettings={pingSettings}
+
+            onPingSettingsChange={updatePingSettings}
+
+            pingSubjectName={(() => {
+              const subject = resolvePingSubject(playerArray, pingFollowKey, isHost);
+              return subject ? getPlayerName(subject, heroMap) : "";
+            })()}
+
           />
 
         </div>
@@ -704,6 +779,13 @@ const App = () => {
 
                 heroMap={heroMap}
 
+                isPingSubject={
+                  pingSubjectKey(player) ===
+                  pingSubjectKey(resolvePingSubject(playerArray, pingFollowKey, isHost))
+                }
+
+                onSelectForPing={() => selectPingSubject(player)}
+
               />
 
             ))}
@@ -711,6 +793,21 @@ const App = () => {
           </ul>
 
 
+
+          {playersOffMap && (
+            <button
+              type="button"
+              onClick={reloadMap}
+              className="absolute left-1/2 top-16 z-50 -translate-x-1/2 max-w-[min(28rem,90vw)] rounded-lg border border-amber-400/60 bg-black/85 px-4 py-2.5 text-left shadow-lg hover:border-amber-300"
+            >
+              <div className="text-amber-300 text-xs font-semibold">
+                Place players on map
+              </div>
+              <div className="text-[11px] text-radar-secondary mt-0.5 leading-snug">
+                Heroes are listed, but nobody is on the map yet. Click once after loading into the match.
+              </div>
+            </button>
+          )}
 
           {hasRadarData ? (
 
@@ -769,6 +866,13 @@ const App = () => {
                 isOnRightSide={true}
 
                 heroMap={heroMap}
+
+                isPingSubject={
+                  pingSubjectKey(player) ===
+                  pingSubjectKey(resolvePingSubject(playerArray, pingFollowKey, isHost))
+                }
+
+                onSelectForPing={() => selectPingSubject(player)}
 
               />
 

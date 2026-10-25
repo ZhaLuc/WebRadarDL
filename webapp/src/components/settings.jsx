@@ -6,6 +6,7 @@ import {
   resolveHeroSlug,
   nudgeCalibration,
 } from "../utilities/utilities";
+import { PING_SOUNDS, playEnemyProximityPing, unlockProximityAudio } from "../utilities/proximityPing";
 
 const Slider = ({ label, value, min, max, step, onChange, display, hint }) => (
   <div>
@@ -164,6 +165,9 @@ const SettingsButton = ({
   isHost = true,
   shareInfo,
   onReloadMap,
+  pingSettings,
+  onPingSettingsChange,
+  pingSubjectName = "",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tab, setTab] = useState(isHost ? "share" : "display");
@@ -292,8 +296,8 @@ const SettingsButton = ({
           <div className="flex items-center justify-between gap-2 mb-3">
             <div className="flex gap-2 flex-wrap">
               {(isHost
-                ? ["share", "display", "performance", "calibrate", "debug"]
-                : ["display", "debug"]
+                ? ["share", "display", "ping", "performance", "calibrate", "debug"]
+                : ["display", "ping", "debug"]
               ).map((name) => (
                 <button
                   key={name}
@@ -437,6 +441,90 @@ const SettingsButton = ({
             </div>
           )}
 
+          {tab === "ping" && (
+            <div className="space-y-3">
+              <div className="rounded-lg bg-black/25 border border-radar-secondary/20 p-3 space-y-1">
+                <div className="text-radar-primary text-xs font-semibold">Who the ping follows</div>
+                <p className="text-[10px] text-radar-secondary leading-relaxed">
+                  The program only knows the host automatically, because the memory reader is on that PC.
+                  Anyone using a share link should click their own hero on the side panel. Pings then use that character, and the choice stays on this browser.
+                </p>
+                <p className="text-[11px] text-amber-200">
+                  {pingSubjectName ? `Following ${pingSubjectName}` : "Click your hero on the side to choose yourself."}
+                </p>
+              </div>
+
+              <label className="flex items-center justify-between gap-2 rounded-lg bg-black/25 border border-radar-secondary/20 p-3 cursor-pointer">
+                <span className="text-radar-primary text-xs font-semibold">Proximity ping</span>
+                <input
+                  type="checkbox"
+                  checked={!!pingSettings?.enabled}
+                  onChange={(event) => {
+                    unlockProximityAudio();
+                    onPingSettingsChange?.({ enabled: event.target.checked });
+                  }}
+                  className="accent-amber-400"
+                />
+              </label>
+
+              <Slider
+                label="Volume"
+                hint="The first ping in a contact is a bit louder than the repeats."
+                value={pingSettings?.volume ?? 85}
+                min={15}
+                max={100}
+                step={5}
+                onChange={(volume) => onPingSettingsChange?.({ volume })}
+                display={`${pingSettings?.volume ?? 85}%`}
+              />
+              <Slider
+                label="Range"
+                hint="How close an enemy must be before the ping starts."
+                value={pingSettings?.range ?? 1800}
+                min={600}
+                max={4500}
+                step={100}
+                onChange={(range) => onPingSettingsChange?.({ range })}
+                display={`${Math.round((pingSettings?.range ?? 1800) / 100) / 10}k`}
+              />
+              <Slider
+                label="Repeat delay"
+                hint="While an enemy stays in range, the ping repeats on this timer."
+                value={pingSettings?.intervalSec ?? 4}
+                min={1}
+                max={20}
+                step={1}
+                onChange={(intervalSec) => onPingSettingsChange?.({ intervalSec })}
+                display={`${pingSettings?.intervalSec ?? 4}s`}
+              />
+
+              <div className="space-y-1.5">
+                <div className="text-radar-secondary text-xs">Ping sound</div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {PING_SOUNDS.map((sound) => (
+                    <button
+                      key={sound.id}
+                      type="button"
+                      onClick={() => {
+                        unlockProximityAudio();
+                        onPingSettingsChange?.({ sound: sound.id });
+                        playEnemyProximityPing(sound.id, pingSettings?.volume ?? 85, true);
+                      }}
+                      className={`text-xs py-2 rounded-lg border ${
+                        pingSettings?.sound === sound.id
+                          ? "bg-amber-400 text-black border-amber-300 font-semibold"
+                          : "bg-black/30 text-radar-secondary border-radar-secondary/30"
+                      }`}
+                    >
+                      {sound.label}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-[10px] text-radar-secondary">Choosing a sound plays it once.</p>
+              </div>
+            </div>
+          )}
+
           {tab === "display" && (
             <div className="space-y-3">
               <Slider
@@ -454,9 +542,8 @@ const SettingsButton = ({
                     Map refresh
                   </div>
                   <p className="text-[10px] text-radar-secondary leading-relaxed">
-                    Use after leaving the lobby and entering a match if heroes show in the
-                    side cards but dots are missing or stuck off-map. Clears cached
-                    lobby positions and forces a fresh entity scan.
+                    Use once after leaving the lobby and entering a match if heroes show in the
+                    side cards but dots are missing. Rebinds the game entity list and scans again.
                   </p>
                   <button
                     type="button"

@@ -73,7 +73,7 @@ namespace
 		const auto pawn_idx = static_cast<int32_t>(hero_handle & ENT_ENTRY_MASK);
 		if (const auto pawn = i::m_game_entity_system->get<c_citadel_player_pawn*>(pawn_idx))
 			entry.m_pawn_addr = reinterpret_cast<uintptr_t>(pawn);
-		else if (entry.m_stats.m_health <= 0)
+		else
 			entry.m_pawn_addr = 0;
 	}
 

@@ -68,10 +68,19 @@ bool f::players::get_data(const player_entry_t& entry)
 	{
 		s_last_positions[entry.m_controller_addr] = vec_origin;
 	}
-	else if (const auto cached = s_last_positions.find(entry.m_controller_addr);
-		cached != s_last_positions.end())
+	else if (entry.m_stats.m_health <= 0)
 	{
-		position = cached->second;
+		if (const auto cached = s_last_positions.find(entry.m_controller_addr);
+			cached != s_last_positions.end())
+		{
+			position = cached->second;
+		}
+	}
+	else
+	{
+		// Alive with no pawn yet (lobby or match load). Do not reuse the last match position.
+		s_last_positions.erase(entry.m_controller_addr);
+		position = {};
 	}
 
 	const auto is_dead = entry.m_stats.m_health <= 0;

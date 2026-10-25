@@ -2,7 +2,13 @@ import MaskedIcon from "./maskedicon";
 import HeroPortrait from "./heroportrait";
 import { getHeroImageForPlayer, getPlayerName, resolveHeroSlug, teamColors } from "../utilities/utilities";
 
-const PlayerCard = ({ playerData, isOnRightSide, heroMap }) => {
+const PlayerCard = ({
+  playerData,
+  isOnRightSide,
+  heroMap,
+  isPingSubject = false,
+  onSelectForPing,
+}) => {
   const heroImage = getHeroImageForPlayer(playerData, heroMap);
   const heroName = getPlayerName(playerData, heroMap);
   const healthPercent = playerData.m_health_max
@@ -16,9 +22,25 @@ const PlayerCard = ({ playerData, isOnRightSide, heroMap }) => {
       className={`flex ${isOnRightSide ? "flex-row-reverse" : ""} gap-1.5`}
     >
       <div className="flex flex-col gap-0.5 justify-center items-center min-w-[3.25rem]">
-        <div className="text-[11px] font-bold text-center leading-tight max-w-[4.5rem] truncate">
+        <button
+          type="button"
+          onClick={onSelectForPing}
+          title={
+            isPingSubject
+              ? "Proximity pings follow this hero."
+              : "Click to use this hero for proximity pings."
+          }
+          className={`text-[11px] font-bold text-center leading-tight max-w-[4.5rem] truncate rounded px-0.5 ${
+            isPingSubject ? "text-amber-300 ring-1 ring-amber-400/70" : "hover:text-amber-200"
+          }`}
+        >
           {heroName}
-        </div>
+        </button>
+        {isPingSubject && (
+          <span className="text-[8px] uppercase tracking-wide text-amber-300/90 leading-none">
+            You
+          </span>
+        )}
         <HeroPortrait
           heroImage={heroImage}
           heroName={heroName}

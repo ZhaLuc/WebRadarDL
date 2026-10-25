@@ -244,8 +244,20 @@ bool main()
 	{
 		if (g_reload_requested.exchange(false))
 		{
+			// Lobby and match use different entity lists. Re-resolve pointers
+			// so pawns exist again without restarting the reader.
+			if (m_memory->is_target_running())
+			{
+				if (i::setup())
+					diag("rebound entity system and game rules");
+				else
+					diag("map reload could not rebind entity system");
+			}
+
+			sdk::update();
 			f::clear_caches();
 			g_last_payload.clear();
+			g_force_full_scan.store(true);
 			diag("cleared player/position caches for map reload");
 		}
 

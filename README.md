@@ -93,7 +93,9 @@ flowchart TB
 - **Windows firewall rule** for LAN viewers (Private profile, TCP 5173)
 - **Public share links** via auto-downloaded `cloudflared`
 - **Share HUD** - top-right Share button; top-left viewer count and click-to-copy friend link
-- **Reload Map** - clear stuck lobby dots and force a fresh entity scan
+- **Reload Map** - rebind the entity list after a lobby-to-match load so dots return without restarting
+- **Place players on map** - one-time prompt when heroes are listed but nobody is on the map
+- **Proximity ping** - optional repeating alert when an enemy is near, with volume, range, delay, and sound choices. The host is detected automatically; share-link viewers click their own hero
 - **Performance mode** - host-tunable update rate, full-scan interval, and lighter reader options
 - **Session sync** - calibration and display settings pushed to remote viewers
 - **Debug panel** - entity system source, scan mode, controller counts
