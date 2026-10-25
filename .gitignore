@@ -24,15 +24,30 @@ usermode/release/usermode.exe
 WebRadarDL.pdb
 launcher/release/intermediates/
 
+# Local dezlock-dump source checkout (binaries live in dumper/)
+tools/_dezlock-src/
+
 # Dezlock dump bulk (codegen only needs client.txt + _globals.txt)
 dumper/schema-dump/deadlock/hierarchy/
 dumper/schema-dump/deadlock/internal-sdk/
 dumper/schema-dump/deadlock/sdk/
 dumper/schema-dump/deadlock/signatures/
 dumper/schema-dump/deadlock/animationsystem.txt
+dumper/schema-dump/deadlock/engine2.txt
+dumper/schema-dump/deadlock/host.txt
+dumper/schema-dump/deadlock/materialsystem2.txt
+dumper/schema-dump/deadlock/networksystem.txt
 dumper/schema-dump/deadlock/particles.txt
 dumper/schema-dump/deadlock/pulse_system.txt
+dumper/schema-dump/deadlock/rendersystemdx11.txt
+dumper/schema-dump/deadlock/resourcesystem.txt
+dumper/schema-dump/deadlock/scenesystem.txt
+dumper/schema-dump/deadlock/schemasystem.txt
 dumper/schema-dump/deadlock/server.txt
+dumper/schema-dump/deadlock/soundsystem.txt
+dumper/schema-dump/deadlock/steamaudio.txt
+dumper/schema-dump/deadlock/vphysics2.txt
+dumper/schema-dump/deadlock/worldrenderer.txt
 dumper/schema-dump/deadlock/_access-paths.txt
 dumper/schema-dump/deadlock/_all-modules.json
 dumper/schema-dump/deadlock/_entity-paths.txt

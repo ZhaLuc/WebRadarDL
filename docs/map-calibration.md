@@ -147,7 +147,7 @@ Enables overlay with pulsing **YOU** marker at local player position. Stand on a
 
 | Path | Description |
 |------|-------------|
-| `webapp/public/maps/deadlock/` | Minimap PNG layers |
+| `webapp/public/data/deadlock/map/layers/` | Minimap layers (2026-09-29 City Never Sleeps) |
 | `webapp/src/data/deadlock/map-definition.json` | Layer metadata |
 | `webapp/src/components/statlockermap.jsx` | Renders masked circular map |
 

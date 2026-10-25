@@ -36,5 +36,11 @@
   "priest": { "file": "Venator__priest_card.png", "name": "Venator" },
   "vampirebat": { "file": "Mina__vampirebat_card.png", "name": "Mina" },
   "werewolf": { "file": "Silver__werewolf_card.png", "name": "Silver" },
-  "magician": { "file": "Sinclair__magician_card.png", "name": "Sinclair" }
+  "magician": { "file": "Sinclair__magician_card.png", "name": "Sinclair" },
+  "deadpack": { "file": "Deadman_Danny__deadpack_card.png", "name": "Deadman Danny" },
+  "ratking": { "file": "Rat_King__ratking_card.png", "name": "Rat King" },
+  "chessmaster": { "file": "Solomon__chessmaster_card.png", "name": "Solomon" },
+  "artist": { "file": "Violet__artist_card.png", "name": "Violet" },
+  "nurse": { "file": "Nurse_Harrow__nurse_card.png", "name": "Nurse Harrow" },
+  "baba": { "file": "Baba__baba_card.png", "name": "Baba" }
 }

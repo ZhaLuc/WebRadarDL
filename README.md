@@ -79,7 +79,8 @@ flowchart TB
 
 ### Live radar
 
-- **Real-time player dots** on a circular Deadlock minimap
+- **Real-time player dots** on the current Deadlock minimap (Statlocker City Never Sleeps layout)
+- **44 heroes** including Baba, Rat King, Deadman Danny, Solomon, Nurse Harrow, and Violet
 - **Hero portraits** and **display names** on side player cards
 - **HP bars** with current / max health
 - **Team colors** - Amber (`#e8a838`) and Sapphire (`#4a9fd8`)

@@ -39,16 +39,18 @@
   z-index: 1;
 }
 
-.statlocker-map .dtm-map-image.dtm-tunnels-layer {
+.statlocker-map .dtm-map-image.dtm-tunnels-layer,
+.statlocker-map .dtm-map-image.dtm-rat-tunnels-layer {
   z-index: 2;
 }
 
-.statlocker-map .dtm-map-image.dtm-tunnels-layer.dtm-transparent {
+.statlocker-map .dtm-map-image.dtm-tunnels-layer.dtm-transparent,
+.statlocker-map .dtm-map-image.dtm-rat-tunnels-layer.dtm-transparent {
   opacity: 0;
 }
 
 .statlocker-map .dtm-map-image.dtm-mid-layer {
-  opacity: 0.35;
+  opacity: 0.55;
   z-index: 3;
 }
 

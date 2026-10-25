@@ -17,7 +17,7 @@ flowchart TD
 
 ### Steps
 
-1. Run **`dumper/dezlock-dump.exe`** against the updated game.
+1. Run **`dumper/dezlock-dump.exe`** against the updated game (the shipped binary includes the 2026-09 pattern update and the Oct 2026 schema field layout, where class fields are read from `classinfo+0x30`).
 2. Ensure output lands in (or replace) **`dumper/schema-dump/deadlock/`** with at least:
    - `client.txt`
    - `_globals.txt`
